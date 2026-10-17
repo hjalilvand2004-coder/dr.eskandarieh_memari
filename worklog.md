@@ -32,3 +32,28 @@ Stage Summary:
 - همه نتایج انرژی «نمایشی ـ فاقد اعتبار برای استناد علمی» برچسب دارند؛ موتور شبیه‌سازی صادقانه پیکربندی‌نشده است
 - بازتولیدپذیری: seed، نسخه داده (demo-morph-energy-v1)، MLModel/ValidationResult/AuditEvent ثبت می‌شوند
 - جایگزینی داده واقعی: از ماژول پایگاه داده (CSV/GeoJSON/EPW با گزارش کیفیت) پشتیبانی می‌شود
+
+---
+Task ID: 2
+Agent: main (Z.ai)
+Task: بسته‌بندی نسخه‌دار و پرتابل سامانه (درخواست کاربر: فایل زیپ با نسخه‌بندی + اجرای تک‌کلیکی روی لپ‌تاپ بدون پایتون/پای‌چارم)
+
+Work Log:
+- اضافه شدن binaryTargets=["native","windows"] به prisma/schema.prisma و regen کلاینت (query_engine-windows.dll.node در بیلد گنجانده شد)
+- بیلد production با output=standalone (Next.js 16.1.3) — ۱۱ مسیر API + SPA
+- دانلود Node.js v22.21.1 برای سه پلتفرم (win-x64 exe، linux-x64، darwin-arm64) از nodejs.org با تأیید SHA256
+- مونتاژ بسته پرتابل dist/Shiraz-Atlas-v1.0.0-Portable: app/ (سرور مستقل + db نمایشی)، runtime/ (سه node)، لانچرها
+- START-WINDOWS.bat (+ کپی «شروع-سامانه.bat»): تنظیم خودکار DATABASE_URL مطلق با اسلش رو به جلو، باز شدن خودکار مرورگر با PowerShell poll، پورت قابل تغییر
+- START-MAC-LINUX.sh: تشخیص OS/ARCH، chmod خودکار، باز شدن مرورگر با curl poll
+- حذف .env مطلق از بسته؛ package.json بسته → name=shiraz-smart-atlas, version=1.0.0
+- README-فارسی.txt (UTF-8 BOM): اجرا بدون نصب، عیب‌یابی، اصول صداقت علمی، attribution MahAI.ir
+- VERSION.txt + CHANGELOG.md (semver 1.0.0) + env.example (بدون کلید واقعی)
+- تست دود کامل از خود بسته با node همراه: صفحه ۲۰۰، bootstrap (پروژه/۴ پرسش/۲ دیتاست)، اطلس ۵۱ بنا/۳ بلوک، رگرسیون OLS واقعی با ثبت MLModel+ValidationResult، K-Means واقعی
+- کشف مهم: فایل SQLite نو (۰ بایتی) جدول ندارد — seedIfEmpty به db:push وابسته است؛ DB بسته با اسکریپت scripts/rebuild-portable-db.sh از صفر ساخته شد (schema push + seed تمیز بدون رکورد آزمایشی)
+- نسخه‌بندی git: commit «v1.0.0 — انتشار پرتابل» + tag v1.0.0؛ package.json اصلی → version 1.0.0
+- خروجی‌ها در download/: Shiraz-Atlas-v1.0.0-Portable.zip (191MB)، Shiraz-Atlas-v1.0.0-Source.zip (643KB از git archive)، SHA256SUMS-v1.0.0.txt؛ تست یکپارچگی unzip -t سبز
+
+Stage Summary:
+- بسته پرتابل روی «لپ‌تاپ بدون هیچ پیش‌نیازی» اجرا می‌شود: استخراج ZIP → دوبار کلیک روی START-WINDOWS.bat → مرورگر خودکار روی localhost:3000
+- هر سه پلتفرم (ویندوز ۶۴بیت، مک سیلیکون، لینوکس x64) پشتیبانی می‌شوند؛ DB پشتیبان‌گیری/انتقال با کپی app/db/custom.db
+- نسخه بعد می‌تواند: اتوپرویژنینگ DB در اولین اجرا (بدون نیاز به db:push)، لانچر با انتخاب پورت در صورت اشغال، بیلد مخصوص Intel Mac

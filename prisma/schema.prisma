@@ -2,7 +2,9 @@
 // موجودیت‌ها بر پایه بخش ۱۲ پرامپت رساله
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  // native = لینوکس/محیط ساخت؛ windows برای اجرای پرتابل روی لپ‌تاپ ویندوزی
+  binaryTargets = ["native", "windows"]
 }
 
 datasource db {

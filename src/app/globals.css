@@ -1,0 +1,276 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ---------- Vazirmatn Font (local, OFL licensed) ---------- */
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("/fonts/Vazirmatn[wght].woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("/fonts/Vazirmatn-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("/fonts/Vazirmatn-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("/fonts/Vazirmatn-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("/fonts/Vazirmatn-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Vazirmatn", "Tahoma", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Vazirmatn", ui-monospace, monospace;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  /* Shiraz heritage palette */
+  --color-lapis: var(--lapis);
+  --color-lapis-deep: var(--lapis-deep);
+  --color-turquoise: var(--turquoise);
+  --color-turquoise-deep: var(--turquoise-deep);
+  --color-copper: var(--copper);
+  --color-sand: var(--sand);
+  --color-sand-deep: var(--sand-deep);
+  --color-earth: var(--earth);
+}
+
+:root {
+  --radius: 0.75rem;
+  /* Light theme — خاکی روشن / ماسه‌ای / لاجوردی */
+  --background: #f8f5ee;
+  --foreground: #1b2a38;
+  --card: #fffdf8;
+  --card-foreground: #1b2a38;
+  --popover: #fffdf8;
+  --popover-foreground: #1b2a38;
+  --primary: #1f4e6e;            /* لاجوردی */
+  --primary-foreground: #f8f5ee;
+  --secondary: #ece5d4;          /* ماسه‌ای روشن */
+  --secondary-foreground: #24333f;
+  --muted: #f0ebdf;
+  --muted-foreground: #5d6b77;
+  --accent: #e2efec;             /* فیروزه‌ای بسیار روشن */
+  --accent-foreground: #14524c;
+  --destructive: #b3402e;
+  --border: #e0d9c8;
+  --input: #ddd5c2;
+  --ring: #17877d;
+  --chart-1: #1f4e6e;
+  --chart-2: #17877d;
+  --chart-3: #b4693b;
+  --chart-4: #d9a441;
+  --chart-5: #7a8c5c;
+  --sidebar: #143954;            /* لاجوردی عمیق */
+  --sidebar-foreground: #e9e4d8;
+  --sidebar-primary: #f2c063;
+  --sidebar-primary-foreground: #143954;
+  --sidebar-accent: #1d4a68;
+  --sidebar-accent-foreground: #f3efe4;
+  --sidebar-border: #2a5470;
+  --sidebar-ring: #4fc3b5;
+  /* Heritage extended tokens */
+  --lapis: #1f4e6e;
+  --lapis-deep: #143954;
+  --turquoise: #17877d;
+  --turquoise-deep: #116b63;
+  --copper: #b4693b;
+  --sand: #d9c7a7;
+  --sand-deep: #b99e73;
+  --earth: #8a7355;
+}
+
+.dark {
+  /* Dark theme — شب لاجوردی */
+  --background: #0e1b26;
+  --foreground: #e8e3d7;
+  --card: #142838;
+  --card-foreground: #e8e3d7;
+  --popover: #142838;
+  --popover-foreground: #e8e3d7;
+  --primary: #6ca6c9;            /* لاجوردی روشن‌شده */
+  --primary-foreground: #0e1b26;
+  --secondary: #1c3346;
+  --secondary-foreground: #e8e3d7;
+  --muted: #182c3c;
+  --muted-foreground: #9db0be;
+  --accent: #143a37;
+  --accent-foreground: #6fd5c8;
+  --destructive: #e06c56;
+  --border: #24425a;
+  --input: #2b4a63;
+  --ring: #4fc3b5;
+  --chart-1: #6ca6c9;
+  --chart-2: #4fc3b5;
+  --chart-3: #d98d5f;
+  --chart-4: #e5bc6b;
+  --chart-5: #a3b87f;
+  --sidebar: #0b1520;
+  --sidebar-foreground: #d5d0c3;
+  --sidebar-primary: #f2c063;
+  --sidebar-primary-foreground: #0b1520;
+  --sidebar-accent: #13293c;
+  --sidebar-accent-foreground: #e8e3d7;
+  --sidebar-border: #1b3a52;
+  --sidebar-ring: #4fc3b5;
+  --lapis: #6ca6c9;
+  --lapis-deep: #3e7cb1;
+  --turquoise: #4fc3b5;
+  --turquoise-deep: #2fa89a;
+  --copper: #d98d5f;
+  --sand: #b9a37c;
+  --sand-deep: #9c855d;
+  --earth: #b39c77;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    font-family: "Vazirmatn", Tahoma, ui-sans-serif, system-ui, sans-serif;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "ss01";
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--turquoise) 30%, transparent);
+  }
+}
+
+/* ---------- RTL helpers ---------- */
+.ltr-block {
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: left;
+}
+.num {
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: isolate;
+}
+
+/* ---------- Girih pattern (هندسه ایرانی، بسیار کم‌رنگ) ---------- */
+.girih-bg {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%231f4e6e' stroke-opacity='0.07' stroke-width='1'%3E%3Cpath d='M36 4 L50 18 L50 36 L36 50 L22 36 L22 18 Z'/%3E%3Cpath d='M36 22 L44 30 L36 38 L28 30 Z'/%3E%3Ccircle cx='36' cy='30' r='3'/%3E%3Cpath d='M0 54 L18 54 M54 54 L72 54 M0 18 L18 18 M54 18 L72 18'/%3E%3C/g%3E%3C/svg%3E");
+}
+.dark .girih-bg {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%236ca6c9' stroke-opacity='0.08' stroke-width='1'%3E%3Cpath d='M36 4 L50 18 L50 36 L36 50 L22 36 L22 18 Z'/%3E%3Cpath d='M36 22 L44 30 L36 38 L28 30 Z'/%3E%3Ccircle cx='36' cy='30' r='3'/%3E%3Cpath d='M0 54 L18 54 M54 54 L72 54 M0 18 L18 18 M54 18 L72 18'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ---------- Custom scrollbars ---------- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--muted-foreground) 35%, transparent);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--muted-foreground) 55%, transparent);
+  background-clip: content-box;
+}
+
+/* ---------- Scientific table ---------- */
+.sci-table th {
+  font-weight: 600;
+  background: color-mix(in srgb, var(--secondary) 60%, transparent);
+}
+
+/* ---------- Print (خروجی پایان‌نامه/مقاله) ---------- */
+@media print {
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  main {
+    overflow: visible !important;
+  }
+}
+.print-only {
+  display: none;
+}
+
+/* ---------- Motion (قابل غیرفعال‌سازی) ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001s !important;
+    transition-duration: 0.001s !important;
+  }
+}
+html.reduce-motion *, html.reduce-motion *::before, html.reduce-motion *::after {
+  animation-duration: 0.001s !important;
+  transition-duration: 0.001s !important;
+}
+
+/* ---------- Focus visibility (دسترس‌پذیری) ---------- */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}

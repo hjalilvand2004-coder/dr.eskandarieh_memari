@@ -1,0 +1,271 @@
+// مدل داده «اطلس هوشمند ریخت‌شناسی و انرژی»
+// موجودیت‌ها بر پایه بخش ۱۲ پرامپت رساله
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────── فضای پژوهش ───────────────
+
+model Project {
+  id            String   @id @default(cuid())
+  title         String
+  subtitle      String?
+  researchTopic String
+  goal          String?
+  scope         String?
+  status        String   @default("active") // active | archived
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model ResearchQuestion {
+  id         String   @id @default(cuid())
+  code       String   // Q1, Q2, ...
+  text       String
+  rationale  String?
+  priority   String   @default("main") // main | sub
+  createdAt  DateTime @default(now())
+}
+
+model Hypothesis {
+  id        String   @id @default(cuid())
+  code      String   // H1, H2, ...
+  text      String
+  linkedQuestionCode String?
+  status    String   @default("proposed") // proposed | under_test | supported | rejected | inconclusive
+  note      String?
+  createdAt DateTime @default(now())
+}
+
+model Chapter {
+  id          String   @id @default(cuid())
+  order       Int
+  title       String
+  description String?
+  status      String   @default("draft") // draft | in_progress | review | done
+  progress    Int      @default(0) // 0..100 — بر مبنای وظایف واقعی
+}
+
+model Task {
+  id         String   @id @default(cuid())
+  title      String
+  column     String   @default("todo") // todo | doing | review | done
+  chapterId  String?
+  priority   String   @default("medium") // low | medium | high
+  dueDate    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  kind      String   @default("general") // general | methodological | limitation | decision
+  title     String
+  body      String
+  createdAt DateTime @default(now())
+}
+
+model Reference {
+  id        String   @id @default(cuid())
+  kind      String   @default("book") // book | article | thesis | standard | dataset | tool
+  title     String
+  authors   String
+  year      String?
+  venue     String?
+  doiOrUrl  String?
+  note      String?  // یادآوری بازبینی کتاب‌شناختی
+  createdAt DateTime @default(now())
+}
+
+model Document {
+  id        String   @id @default(cuid())
+  title     String
+  section   String?  // نام بخش/صفحه سند برای ارجاع دستیار
+  content   String
+  kind      String   @default("method") // method | indicator | data | policy | help
+  createdAt DateTime @default(now())
+}
+
+// ─────────────── داده و فضای مکانی ───────────────
+
+model Dataset {
+  id          String   @id @default(cuid())
+  name        String
+  kind        String   @default("csv") // csv | geojson | epw | simulation_output | field_sensor | image
+  origin      String   @default("synthetic_demo") // observed | simulated | predicted | synthetic_demo
+  source      String?
+  license     String?
+  scale       String?  // building | block | neighborhood
+  crs         String?
+  units       String?
+  timeRange   String?
+  timeResolution String?
+  missingPolicy String?
+  qualityNote String?
+  uncertainty String?
+  enteredBy   String?
+  version     Int      @default(1)
+  rowCount    Int      @default(0)
+  variables   String?  // JSON: فرهنگ داده
+  data        String?  // JSON: داده پردازش‌شده (خام تغییر نمی‌کند)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SpatialEntity {
+  id         String  @id @default(cuid())
+  code       String  @unique // B-01 ...
+  kind       String  @default("building") // building | block | neighborhood | courtyard | passage
+  name       String
+  parentId   String?
+  blockName  String?
+  geometry   String  // JSON: polygon local meters
+  centroidX  Float
+  centroidY  Float
+  props      String  // JSON: height, floors, era, material, condition, openings...
+  demo       Boolean @default(true)
+}
+
+model MorphologyIndicator {
+  id        String  @id @default(cuid())
+  key       String  // hw_ratio, coverage, ...
+  entityId  String?
+  scope     String  // building | block | district
+  value     Float?
+  unit      String?
+  computed  Boolean @default(false)
+  note      String?
+}
+
+model WeatherFile {
+  id          String  @id @default(cuid())
+  name        String
+  location    String?
+  latitude    Float?
+  longitude   Float?
+  elevation   Float?
+  tz          String?
+  periodYears String?
+  origin      String  @default("unconfigured") // unconfigured | uploaded_epw | reference
+  note        String?
+}
+
+// ─────────────── شبیه‌سازی و آزمایش ───────────────
+
+model SimulationModel {
+  id          String  @id @default(cuid())
+  name        String
+  engine      String  @default("unconfigured") // EnergyPlus | Ladybug | ENVI-met | unconfigured
+  geometrySrc String?
+  materials   String? // JSON
+  schedules   String?
+  hvac        String?
+  weatherId   String?
+  status      String  @default("draft")
+  note        String?
+}
+
+model ExperimentRun {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  modelId     String?
+  scenarioId  String?
+  label       String
+  matrix      String?  // JSON: ماتریس آزمایش
+  status      String   @default("pending") // pending | queued | running | done | failed | blocked
+  engine      String?
+  startedAt   DateTime?
+  durationMs  Int?
+  errorMessage String?
+  outputs     String?  // JSON
+  seed        Int?
+  reproducibility String? // JSON: داده + پارامترها + نسخه‌ها
+}
+
+model Scenario {
+  id          String  @id @default(cuid())
+  createdAt   DateTime @default(now())
+  name        String
+  category    String  // envelope | shading | material | vegetation | low_intervention | operation
+  description String
+  params      String  // JSON: تغییرات پارامترها
+  heritageConstraint String?
+  objectives  String? // JSON
+  status      String  @default("defined") // defined | evaluated
+  result      String? // JSON: نتیجه برآورد مدل جانشین
+  evaluationNote String?
+}
+
+// ─────────────── یادگیری ماشین و اعتبارسنجی ───────────────
+
+model MLModel {
+  id          String   @id @default(cuid())
+  name        String
+  algorithm   String   // ols | kmeans | random_forest | xgboost
+  task        String   // regression | clustering
+  features    String   // JSON
+  target      String?
+  params      String   // JSON: ابرپارامترها
+  seed        Int?
+  dataVersion String?
+  splitStrategy String? // group_split_by_block | temporal | random
+  trainSize   Int?
+  testSize    Int?
+  status      String   @default("internal_eval") // unvalidated | internal_eval | independent_test | external_validation
+  artifacts   String?  // JSON: ضرایب، مرکزها، ...
+  limitations String?
+  createdAt   DateTime @default(now())
+}
+
+model ValidationResult {
+  id        String  @id @default(cuid())
+  modelId   String?
+  path      String  // a_simulation_vs_measurement | b_ml_vs_test | c_surrogate_consistency
+  metrics   String  // JSON: MAE, RMSE, R2, NMBE, CVRMSE, MAPE...
+  criteriaVersion String?
+  timeBasis String?
+  dataType  String?
+  thresholds String? // JSON + منبع آستانه
+  verdict   String?
+  note      String?
+  createdAt DateTime @default(now())
+}
+
+// ─────────────── نمودار، گزارش و ممیزی ───────────────
+
+model ChartSpecification {
+  id        String  @id @default(cuid())
+  title     String
+  figureNo  String?
+  kind      String
+  dataSpec  String  // JSON: انتخاب داده و فیلتر
+  style     String? // JSON: رنگ، محور، فونت
+  caption   String?
+  dataOrigin String? // منبع داده پشت نمودار
+  method    String?
+  analysisVersion String?
+  createdAt DateTime @default(now())
+}
+
+model Report {
+  id        String   @id @default(cuid())
+  title     String
+  kind      String   @default("progress") // progress | analysis | validation
+  content   String?  // JSON بخش‌ها
+  createdAt DateTime @default(now())
+}
+
+model AuditEvent {
+  id        String   @id @default(cuid())
+  actor     String
+  action    String
+  target    String?
+  detail    String?
+  createdAt DateTime @default(now())
+}

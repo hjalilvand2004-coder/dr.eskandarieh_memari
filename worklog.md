@@ -125,3 +125,19 @@ Work Log:
 
 Stage Summary:
 - دو مسیر تحویل موازی: ZIP کامل سه‌پلتفرمی (191MB) + ZIP فقط-ویندوز (116MB) — هر دو در download/ با mtime تازه؛ اگر پیوست بزرگ نرسد، نسخه 116MB جایگزین مطمئن است
+
+---
+Task ID: 7
+Agent: main (Z.ai)
+Task: انتشار نسخه v1.1.0 در گیت‌هاب (درخواست کاربر: آدرس github.com/hjalilvand2004-coder/dr.eskandarieh_memari.git)
+
+Work Log:
+- بررسی مخزن مقصد با git ls-remote: مخزن موجود، عمومی و خالی (بدون ref)؛ push بدون احراز هویت ممکن نیست
+- محیط: بدون credential helper / .netrc / GITHUB_TOKEN و بدون gh CLI → توکن از کاربر لازم است
+- آماده‌سازی انتشار: ساخت README.md فارسی حرفه‌ای (معرفی، ۱۱ ماژول، سیستم تم v1.1.0، اجرای پرتابل و سورس، اصول صداقت علمی، attribution) و commit (2aefd89)
+- git remote add origin → hjalilvand2004-coder/dr.eskandarieh_memari.git
+- ممیزی امنیتی push: هیچ فایل حساس (.env/db/token) ردیابی نمی‌شود؛ بزرگ‌ترین فایل bun.lock = 329KB
+- پیش‌نمایش انتشار: شاخه main با ۱۰ کامیت + تگ‌های v1.0.0 و v1.1.0
+
+Stage Summary:
+- همه‌چیز برای push یک‌فرمانی آماده است؛ منتظر Personal Access Token (دسترسی repo) از کاربر برای اجرای push origin main --tags

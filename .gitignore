@@ -54,3 +54,12 @@ server.log
 /skills/
 # portable build artifacts
 /dist/
+
+# deliverables & runtime artifacts (build products, not source)
+/download/
+/db/*.db
+/dev.log
+/server.log
+/.zscripts/
+/.env
+/Caddyfile

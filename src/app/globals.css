@@ -78,7 +78,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  /* Shiraz heritage palette */
+  /* Shiraz heritage palette (بازنقشه‌برداری در هر تم) */
   --color-lapis: var(--lapis);
   --color-lapis-deep: var(--lapis-deep);
   --color-turquoise: var(--turquoise);
@@ -89,9 +89,11 @@
   --color-earth: var(--earth);
 }
 
+/* ================================================================
+   تم ۱: شیراز کلاسیک (پیش‌فرض) — روشن
+   ================================================================ */
 :root {
-  --radius: 0.75rem;
-  /* Light theme — خاکی روشن / ماسه‌ای / لاجوردی */
+  --radius: 0.8rem;
   --background: #f8f5ee;
   --foreground: #1b2a38;
   --card: #fffdf8;
@@ -132,17 +134,24 @@
   --sand: #d9c7a7;
   --sand-deep: #b99e73;
   --earth: #8a7355;
+  /* هاله‌های تزئینی پس‌زمینه */
+  --glow-a: rgba(23, 135, 125, 0.14);
+  --glow-b: rgba(31, 78, 110, 0.12);
+  --glow-c: rgba(180, 105, 59, 0.10);
+  --orb-opacity: 0.55;
 }
 
+/* ================================================================
+   تم ۱: شیراز کلاسیک — تیره
+   ================================================================ */
 .dark {
-  /* Dark theme — شب لاجوردی */
   --background: #0e1b26;
   --foreground: #e8e3d7;
   --card: #142838;
   --card-foreground: #e8e3d7;
   --popover: #142838;
   --popover-foreground: #e8e3d7;
-  --primary: #6ca6c9;            /* لاجوردی روشن‌شده */
+  --primary: #6ca6c9;
   --primary-foreground: #0e1b26;
   --secondary: #1c3346;
   --secondary-foreground: #e8e3d7;
@@ -175,22 +184,656 @@
   --sand: #b9a37c;
   --sand-deep: #9c855d;
   --earth: #b39c77;
+  --glow-a: rgba(79, 195, 181, 0.10);
+  --glow-b: rgba(108, 166, 201, 0.12);
+  --glow-c: rgba(217, 141, 95, 0.08);
+  --orb-opacity: 0.45;
 }
 
+/* ================================================================
+   تم ۲: فیروزه‌ای — روشن
+   ================================================================ */
+[data-skin="turquoise"] {
+  --background: #eff9f8;
+  --foreground: #0e3336;
+  --card: #fbfefd;
+  --card-foreground: #0e3336;
+  --popover: #fbfefd;
+  --popover-foreground: #0e3336;
+  --primary: #0e7c72;
+  --primary-foreground: #f2fbfa;
+  --secondary: #d9efec;
+  --secondary-foreground: #14403c;
+  --muted: #e6f3f1;
+  --muted-foreground: #4c6a67;
+  --accent: #d6efec;
+  --accent-foreground: #0c5d55;
+  --destructive: #b3402e;
+  --border: #c9e4e0;
+  --input: #b9dcd7;
+  --ring: #12a094;
+  --chart-1: #0e7c72;
+  --chart-2: #1296a8;
+  --chart-3: #c07a3f;
+  --chart-4: #e0b34f;
+  --chart-5: #5b8a72;
+  --sidebar: #084d48;
+  --sidebar-foreground: #d9f0ed;
+  --sidebar-primary: #ffd88a;
+  --sidebar-primary-foreground: #084d48;
+  --sidebar-accent: #0d635c;
+  --sidebar-accent-foreground: #eafaf7;
+  --sidebar-border: #0f5f59;
+  --sidebar-ring: #56d6c8;
+  --lapis: #0e7c72;
+  --lapis-deep: #084d48;
+  --turquoise: #12a094;
+  --turquoise-deep: #0d7c72;
+  --copper: #c07a3f;
+  --sand: #cde9e4;
+  --sand-deep: #a3d1c9;
+  --earth: #587f78;
+  --glow-a: rgba(18, 160, 148, 0.16);
+  --glow-b: rgba(8, 77, 72, 0.12);
+  --glow-c: rgba(224, 179, 79, 0.10);
+  --orb-opacity: 0.6;
+}
+[data-skin="turquoise"].dark {
+  --background: #07201e;
+  --foreground: #dff2ef;
+  --card: #0b2a28;
+  --card-foreground: #dff2ef;
+  --popover: #0b2a28;
+  --popover-foreground: #dff2ef;
+  --primary: #4fd8ca;
+  --primary-foreground: #06201e;
+  --secondary: #113634;
+  --secondary-foreground: #dff2ef;
+  --muted: #0e2f2d;
+  --muted-foreground: #93b5b0;
+  --accent: #0e3b36;
+  --accent-foreground: #6fdccf;
+  --destructive: #e06c56;
+  --border: #164744;
+  --input: #1b534f;
+  --ring: #56d6c8;
+  --chart-1: #4fd8ca;
+  --chart-2: #63b8e8;
+  --chart-3: #e0986a;
+  --chart-4: #ecc878;
+  --chart-5: #96c9a8;
+  --sidebar: #04211f;
+  --sidebar-foreground: #cfe8e4;
+  --sidebar-primary: #ffd88a;
+  --sidebar-primary-foreground: #04211f;
+  --sidebar-accent: #0a312e;
+  --sidebar-accent-foreground: #dff2ef;
+  --sidebar-border: #0f3f3b;
+  --sidebar-ring: #56d6c8;
+  --lapis: #4fd8ca;
+  --lapis-deep: #2aa89b;
+  --turquoise: #56d6c8;
+  --turquoise-deep: #35b5a7;
+  --copper: #e0986a;
+  --sand: #a8ccc5;
+  --sand-deep: #7fa89f;
+  --earth: #7fa39c;
+  --glow-a: rgba(86, 214, 200, 0.12);
+  --glow-b: rgba(99, 184, 232, 0.10);
+  --glow-c: rgba(236, 200, 120, 0.07);
+  --orb-opacity: 0.5;
+}
+
+/* ================================================================
+   تم ۳: آبی تیره — روشن
+   ================================================================ */
+[data-skin="midnight"] {
+  --background: #f1f5fb;
+  --foreground: #132339;
+  --card: #fdfeff;
+  --card-foreground: #132339;
+  --popover: #fdfeff;
+  --popover-foreground: #132339;
+  --primary: #1c5499;
+  --primary-foreground: #f0f6fd;
+  --secondary: #e0e9f5;
+  --secondary-foreground: #1a2c45;
+  --muted: #e8eef7;
+  --muted-foreground: #52667f;
+  --accent: #dceaf9;
+  --accent-foreground: #17497e;
+  --destructive: #b3402e;
+  --border: #d0deee;
+  --input: #c2d4e9;
+  --ring: #3d84c6;
+  --chart-1: #1c5499;
+  --chart-2: #3d84c6;
+  --chart-3: #d98d5f;
+  --chart-4: #e0b25c;
+  --chart-5: #6b8cae;
+  --sidebar: #0c2747;
+  --sidebar-foreground: #d8e4f4;
+  --sidebar-primary: #7cb8ec;
+  --sidebar-primary-foreground: #0c2747;
+  --sidebar-accent: #143661;
+  --sidebar-accent-foreground: #e8f1fc;
+  --sidebar-border: #1a3f6d;
+  --sidebar-ring: #6fb1e8;
+  --lapis: #1c5499;
+  --lapis-deep: #0c2747;
+  --turquoise: #3d84c6;
+  --turquoise-deep: #2c6aa5;
+  --copper: #c46a35;
+  --sand: #cfdff2;
+  --sand-deep: #a6c0e0;
+  --earth: #5c7492;
+  --glow-a: rgba(61, 132, 198, 0.16);
+  --glow-b: rgba(28, 84, 153, 0.13);
+  --glow-c: rgba(224, 178, 92, 0.09);
+  --orb-opacity: 0.6;
+}
+[data-skin="midnight"].dark {
+  --background: #070f1d;
+  --foreground: #dfe8f4;
+  --card: #0d1a30;
+  --card-foreground: #dfe8f4;
+  --popover: #0d1a30;
+  --popover-foreground: #dfe8f4;
+  --primary: #6ba6e0;
+  --primary-foreground: #070f1d;
+  --secondary: #14233d;
+  --secondary-foreground: #dfe8f4;
+  --muted: #10203a;
+  --muted-foreground: #8fa3bd;
+  --accent: #12294a;
+  --accent-foreground: #79b4ec;
+  --destructive: #e06c56;
+  --border: #1c3050;
+  --input: #24395c;
+  --ring: #6fb1e8;
+  --chart-1: #6ba6e0;
+  --chart-2: #57c4d8;
+  --chart-3: #e09070;
+  --chart-4: #ecc278;
+  --chart-5: #9db8d8;
+  --sidebar: #050b17;
+  --sidebar-foreground: #c9d8ea;
+  --sidebar-primary: #7cb8ec;
+  --sidebar-primary-foreground: #050b17;
+  --sidebar-accent: #0e1c33;
+  --sidebar-accent-foreground: #dfe8f4;
+  --sidebar-border: #142541;
+  --sidebar-ring: #6fb1e8;
+  --lapis: #6ba6e0;
+  --lapis-deep: #3a72b0;
+  --turquoise: #57c4d8;
+  --turquoise-deep: #38a0b5;
+  --copper: #e09070;
+  --sand: #a3b9d4;
+  --sand-deep: #7f97b5;
+  --earth: #8399b3;
+  --glow-a: rgba(111, 177, 232, 0.12);
+  --glow-b: rgba(87, 196, 216, 0.09);
+  --glow-c: rgba(236, 194, 120, 0.06);
+  --orb-opacity: 0.5;
+}
+
+/* ================================================================
+   تم ۴: شیشه‌ای مدرن (گلس‌مورفیسم) — روشن
+   ================================================================ */
+[data-skin="glass"] {
+  --background: #eef0f9;
+  --foreground: #232242;
+  --card: rgba(255, 255, 255, 0.62);
+  --card-foreground: #232242;
+  --popover: rgba(255, 255, 255, 0.9);
+  --popover-foreground: #232242;
+  --primary: #6d5cf0;
+  --primary-foreground: #ffffff;
+  --secondary: #e7e4fb;
+  --secondary-foreground: #3a3468;
+  --muted: #ebeaf6;
+  --muted-foreground: #5f5d80;
+  --accent: #e0f1fb;
+  --accent-foreground: #0e6fa0;
+  --destructive: #e0475e;
+  --border: #d9d7ee;
+  --input: #d5d3ef;
+  --ring: #8b7cf8;
+  --chart-1: #6d5cf0;
+  --chart-2: #22c8d6;
+  --chart-3: #f06292;
+  --chart-4: #ffb64f;
+  --chart-5: #4fc98f;
+  --sidebar: rgba(43, 38, 80, 0.86);
+  --sidebar-foreground: #e6e4fa;
+  --sidebar-primary: #8ce0ea;
+  --sidebar-primary-foreground: #2b2650;
+  --sidebar-accent: rgba(255, 255, 255, 0.09);
+  --sidebar-accent-foreground: #efedfd;
+  --sidebar-border: rgba(255, 255, 255, 0.14);
+  --sidebar-ring: #22c8d6;
+  --lapis: #6d5cf0;
+  --lapis-deep: #5443d6;
+  --turquoise: #22c8d6;
+  --turquoise-deep: #14a3b3;
+  --copper: #f06292;
+  --sand: #e4e2f6;
+  --sand-deep: #c0bce4;
+  --earth: #8e88b8;
+  --glow-a: rgba(109, 92, 240, 0.22);
+  --glow-b: rgba(34, 200, 214, 0.20);
+  --glow-c: rgba(240, 98, 146, 0.18);
+  --orb-opacity: 0.75;
+}
+[data-skin="glass"].dark {
+  --background: #0c0a1c;
+  --foreground: #eceafb;
+  --card: rgba(28, 24, 54, 0.55);
+  --card-foreground: #eceafb;
+  --popover: rgba(20, 17, 40, 0.94);
+  --popover-foreground: #eceafb;
+  --primary: #9a8cff;
+  --primary-foreground: #0c0a1c;
+  --secondary: #232048;
+  --secondary-foreground: #eceafb;
+  --muted: #1a1735;
+  --muted-foreground: #a29ec6;
+  --accent: #1d1a3e;
+  --accent-foreground: #8ce0ea;
+  --destructive: #ff6b81;
+  --border: #2b2650;
+  --input: #353060;
+  --ring: #22c8d6;
+  --chart-1: #9a8cff;
+  --chart-2: #2dd8e6;
+  --chart-3: #ff7fa4;
+  --chart-4: #ffc86e;
+  --chart-5: #66dba4;
+  --sidebar: rgba(15, 12, 34, 0.78);
+  --sidebar-foreground: #d5d1f0;
+  --sidebar-primary: #2dd8e6;
+  --sidebar-primary-foreground: #120f28;
+  --sidebar-accent: rgba(255, 255, 255, 0.08);
+  --sidebar-accent-foreground: #eceafb;
+  --sidebar-border: rgba(255, 255, 255, 0.12);
+  --sidebar-ring: #2dd8e6;
+  --lapis: #9a8cff;
+  --lapis-deep: #7a68f0;
+  --turquoise: #2dd8e6;
+  --turquoise-deep: #1cb5c5;
+  --copper: #ff7fa4;
+  --sand: #b8b2e0;
+  --sand-deep: #948dbf;
+  --earth: #a49dd0;
+  --glow-a: rgba(154, 140, 255, 0.28);
+  --glow-b: rgba(45, 216, 230, 0.20);
+  --glow-c: rgba(255, 127, 164, 0.18);
+  --orb-opacity: 0.85;
+}
+
+/* ================================================================
+   تم ۵: زعفرانی — روشن
+   ================================================================ */
+[data-skin="saffron"] {
+  --background: #faf5ea;
+  --foreground: #2e2313;
+  --card: #fffdf6;
+  --card-foreground: #2e2313;
+  --popover: #fffdf6;
+  --popover-foreground: #2e2313;
+  --primary: #a06a1a;
+  --primary-foreground: #fdf8ec;
+  --secondary: #f2e6cc;
+  --secondary-foreground: #43331a;
+  --muted: #f5edda;
+  --muted-foreground: #6f6349;
+  --accent: #f7ead1;
+  --accent-foreground: #8a5c12;
+  --destructive: #b03a2e;
+  --border: #e6d9bc;
+  --input: #dccfae;
+  --ring: #cf9a2e;
+  --chart-1: #a06a1a;
+  --chart-2: #cf9a2e;
+  --chart-3: #b3512e;
+  --chart-4: #5f8a5a;
+  --chart-5: #8a6db0;
+  --sidebar: #3d2a10;
+  --sidebar-foreground: #f0e4c8;
+  --sidebar-primary: #f2c14e;
+  --sidebar-primary-foreground: #3d2a10;
+  --sidebar-accent: #52391a;
+  --sidebar-accent-foreground: #f7edd6;
+  --sidebar-border: #5c411e;
+  --sidebar-ring: #f2c14e;
+  --lapis: #a06a1a;
+  --lapis-deep: #3d2a10;
+  --turquoise: #cf9a2e;
+  --turquoise-deep: #a87a1c;
+  --copper: #b3512e;
+  --sand: #ecdcba;
+  --sand-deep: #cbb287;
+  --earth: #7d6b4c;
+  --glow-a: rgba(207, 154, 46, 0.18);
+  --glow-b: rgba(160, 106, 26, 0.13);
+  --glow-c: rgba(179, 81, 46, 0.10);
+  --orb-opacity: 0.6;
+}
+[data-skin="saffron"].dark {
+  --background: #1a1206;
+  --foreground: #f0e6d0;
+  --card: #241a0b;
+  --card-foreground: #f0e6d0;
+  --popover: #241a0b;
+  --popover-foreground: #f0e6d0;
+  --primary: #e9b558;
+  --primary-foreground: #1a1206;
+  --secondary: #2e2210;
+  --secondary-foreground: #f0e6d0;
+  --muted: #261c0c;
+  --muted-foreground: #b3a488;
+  --accent: #33250e;
+  --accent-foreground: #f2c14e;
+  --destructive: #e56b5a;
+  --border: #3a2c14;
+  --input: #45351a;
+  --ring: #f2c14e;
+  --chart-1: #e9b558;
+  --chart-2: #e08a4e;
+  --chart-3: #d96a4a;
+  --chart-4: #9cbf7a;
+  --chart-5: #c2a0d8;
+  --sidebar: #120c04;
+  --sidebar-foreground: #e2d5b8;
+  --sidebar-primary: #f2c14e;
+  --sidebar-primary-foreground: #120c04;
+  --sidebar-accent: #201708;
+  --sidebar-accent-foreground: #f0e6d0;
+  --sidebar-border: #2e2210;
+  --sidebar-ring: #f2c14e;
+  --lapis: #e9b558;
+  --lapis-deep: #b98a2e;
+  --turquoise: #f2c14e;
+  --turquoise-deep: #d0a03a;
+  --copper: #e08a4e;
+  --sand: #bfa87e;
+  --sand-deep: #99855e;
+  --earth: #a89878;
+  --glow-a: rgba(242, 193, 78, 0.13);
+  --glow-b: rgba(224, 138, 78, 0.10);
+  --glow-c: rgba(217, 106, 74, 0.07);
+  --orb-opacity: 0.5;
+}
+
+/* ================================================================
+   تم ۶: زمردی — روشن
+   ================================================================ */
+[data-skin="emerald"] {
+  --background: #f0f8f3;
+  --foreground: #122a1f;
+  --card: #fbfefc;
+  --card-foreground: #122a1f;
+  --popover: #fbfefc;
+  --popover-foreground: #122a1f;
+  --primary: #177a4c;
+  --primary-foreground: #f0faf4;
+  --secondary: #dcefe3;
+  --secondary-foreground: #1a3a2a;
+  --muted: #e6f3ea;
+  --muted-foreground: #4f6c5e;
+  --accent: #d9f0e2;
+  --accent-foreground: #116240;
+  --destructive: #b3402e;
+  --border: #c9e4d4;
+  --input: #b7dcc7;
+  --ring: #27a56a;
+  --chart-1: #177a4c;
+  --chart-2: #27a56a;
+  --chart-3: #a8683c;
+  --chart-4: #d9a441;
+  --chart-5: #4a8ab0;
+  --sidebar: #0b3b26;
+  --sidebar-foreground: #d8efdf;
+  --sidebar-primary: #f2c063;
+  --sidebar-primary-foreground: #0b3b26;
+  --sidebar-accent: #105334;
+  --sidebar-accent-foreground: #e6f6ec;
+  --sidebar-border: #135c3a;
+  --sidebar-ring: #58cf94;
+  --lapis: #177a4c;
+  --lapis-deep: #0b3b26;
+  --turquoise: #27a56a;
+  --turquoise-deep: #1b8a56;
+  --copper: #a8683c;
+  --sand: #cde8d6;
+  --sand-deep: #a2cbb1;
+  --earth: #55755f;
+  --glow-a: rgba(39, 165, 106, 0.16);
+  --glow-b: rgba(23, 122, 76, 0.13);
+  --glow-c: rgba(217, 164, 65, 0.10);
+  --orb-opacity: 0.6;
+}
+[data-skin="emerald"].dark {
+  --background: #061710;
+  --foreground: #dcf0e4;
+  --card: #0b241a;
+  --card-foreground: #dcf0e4;
+  --popover: #0b241a;
+  --popover-foreground: #dcf0e4;
+  --primary: #58cf94;
+  --primary-foreground: #061710;
+  --secondary: #103526;
+  --secondary-foreground: #dcf0e4;
+  --muted: #0d2c20;
+  --muted-foreground: #8fb3a0;
+  --accent: #0f3a28;
+  --accent-foreground: #6fe0a8;
+  --destructive: #e06c56;
+  --border: #16452f;
+  --input: #1c5439;
+  --ring: #58cf94;
+  --chart-1: #58cf94;
+  --chart-2: #4fc3d8;
+  --chart-3: #e09070;
+  --chart-4: #ecc878;
+  --chart-5: #a0c9b8;
+  --sidebar: #04120b;
+  --sidebar-foreground: #c8e6d3;
+  --sidebar-primary: #f2c063;
+  --sidebar-primary-foreground: #04120b;
+  --sidebar-accent: #0a2e1e;
+  --sidebar-accent-foreground: #dcf0e4;
+  --sidebar-border: #0f3a26;
+  --sidebar-ring: #58cf94;
+  --lapis: #58cf94;
+  --lapis-deep: #2fa868;
+  --turquoise: #58cf94;
+  --turquoise-deep: #3bb878;
+  --copper: #e09070;
+  --sand: #a8cdb6;
+  --sand-deep: #7fa891;
+  --earth: #7fa38d;
+  --glow-a: rgba(88, 207, 148, 0.12);
+  --glow-b: rgba(79, 195, 216, 0.09);
+  --glow-c: rgba(236, 200, 120, 0.06);
+  --orb-opacity: 0.5;
+}
+
+/* ================================================================
+   پایه — ارتقای گرافیکی مشترک همه تم‌ها
+   ================================================================ */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   html {
     font-family: "Vazirmatn", Tahoma, ui-sans-serif, system-ui, sans-serif;
+    scroll-behavior: smooth;
   }
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "ss01";
+    /* عمق پس‌زمینه با هاله‌های نرم رنگ تم */
+    background-image:
+      radial-gradient(1100px 720px at 88% -8%, var(--glow-b), transparent 62%),
+      radial-gradient(900px 640px at -12% 108%, var(--glow-c), transparent 58%),
+      radial-gradient(760px 560px at 50% 118%, var(--glow-a), transparent 55%);
+    background-attachment: fixed;
+    min-height: 100vh;
   }
   ::selection {
     background: color-mix(in srgb, var(--turquoise) 30%, transparent);
   }
+}
+
+/* ---------- کارت‌ها: سایه نرم چندلایه و واکنش دقیق ---------- */
+[data-slot="card"] {
+  box-shadow:
+    0 1px 2px rgb(20 35 50 / 0.04),
+    0 8px 28px -14px rgb(20 35 50 / 0.14);
+  transition: box-shadow 0.35s ease, border-color 0.35s ease, background-color 0.35s ease;
+}
+[data-slot="card"]:hover {
+  box-shadow:
+    0 2px 4px rgb(20 35 50 / 0.05),
+    0 18px 44px -18px rgb(20 35 50 / 0.20);
+}
+.dark [data-slot="card"] {
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.35),
+    0 10px 32px -14px rgb(0 0 0 / 0.45);
+}
+.dark [data-slot="card"]:hover {
+  box-shadow:
+    0 2px 4px rgb(0 0 0 / 0.4),
+    0 20px 48px -18px rgb(0 0 0 / 0.55);
+}
+
+/* ---------- جلوه ویژه تم شیشه‌ای ---------- */
+[data-skin="glass"] [data-slot="card"] {
+  backdrop-filter: blur(18px) saturate(1.45);
+  -webkit-backdrop-filter: blur(18px) saturate(1.45);
+  border-color: rgba(255, 255, 255, 0.55);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.35) inset,
+    0 8px 32px -12px rgba(80, 70, 160, 0.25);
+}
+[data-skin="glass"] [data-slot="card"]:hover {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.45) inset,
+    0 20px 48px -16px rgba(80, 70, 160, 0.35);
+}
+html.dark[data-skin="glass"] [data-slot="card"] {
+  border-color: rgba(255, 255, 255, 0.13);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 12px 40px -12px rgba(0, 0, 0, 0.55);
+}
+[data-skin="glass"] [data-glass="sidebar"] {
+  backdrop-filter: blur(26px) saturate(1.4);
+  -webkit-backdrop-filter: blur(26px) saturate(1.4);
+}
+[data-skin="glass"] header[data-glass="header"] {
+  background: color-mix(in srgb, var(--background) 55%, transparent);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+}
+
+/* ---------- پس‌زمینه مش رنگی اختصاصی تم شیشه‌ای ---------- */
+[data-skin="glass"] body {
+  background-image:
+    radial-gradient(900px 620px at 85% -10%, var(--glow-a), transparent 60%),
+    radial-gradient(820px 560px at 8% 20%, var(--glow-b), transparent 55%),
+    radial-gradient(1000px 700px at 50% 115%, var(--glow-c), transparent 58%),
+    linear-gradient(180deg, var(--background), var(--background));
+}
+
+/* ---------- هاله‌های شناور تزئینی ---------- */
+.app-orbs {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: var(--orb-opacity, 0.5);
+}
+.orb-1 {
+  width: 460px; height: 460px;
+  background: var(--glow-b);
+  top: -140px; left: -100px;
+}
+.orb-2 {
+  width: 380px; height: 380px;
+  background: var(--glow-a);
+  bottom: -120px; right: -80px;
+}
+.orb-3 {
+  width: 300px; height: 300px;
+  background: var(--glow-c);
+  top: 30%; right: 22%;
+  opacity: calc(var(--orb-opacity, 0.5) * 0.6);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.reduce-motion) .orb-1 { animation: orb-drift 26s ease-in-out infinite alternate; }
+  html:not(.reduce-motion) .orb-2 { animation: orb-drift 32s ease-in-out infinite alternate-reverse; }
+  html:not(.reduce-motion) .orb-3 { animation: orb-drift 38s ease-in-out infinite alternate; }
+}
+@keyframes orb-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(40px, 26px, 0) scale(1.08); }
+}
+
+/* ---------- ورود نرم ماژول‌ها ---------- */
+@keyframes module-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+.module-fade {
+  animation: module-in 0.35s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+/* ---------- درخشش نرم لوگو ---------- */
+@keyframes logo-glow {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--sidebar-ring) 35%, transparent); }
+  50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--sidebar-ring) 8%, transparent); }
+}
+.logo-glow {
+  animation: logo-glow 3.2s ease-in-out infinite;
+}
+
+/* ---------- درخش دکمه اصلی ---------- */
+@keyframes sheen {
+  0% { transform: translateX(-150%); }
+  60%, 100% { transform: translateX(150%); }
+}
+.btn-sheen {
+  position: relative;
+  overflow: hidden;
+}
+.btn-sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.35) 50%, transparent 65%);
+  transform: translateX(-150%);
+  animation: sheen 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ---------- انتقال نرم هنگام تعویض تم ---------- */
+html.skin-switching,
+html.skin-switching body,
+html.skin-switching *,
+html.skin-switching *::before,
+html.skin-switching *::after {
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease,
+    fill 0.4s ease, stroke 0.4s ease, box-shadow 0.4s ease !important;
 }
 
 /* ---------- RTL helpers ---------- */
@@ -204,12 +847,12 @@
   unicode-bidi: isolate;
 }
 
-/* ---------- Girih pattern (هندسه ایرانی، بسیار کم‌رنگ) ---------- */
+/* ---------- Girih pattern (خنثی؛ سازگار با همه تم‌ها) ---------- */
 .girih-bg {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%231f4e6e' stroke-opacity='0.07' stroke-width='1'%3E%3Cpath d='M36 4 L50 18 L50 36 L36 50 L22 36 L22 18 Z'/%3E%3Cpath d='M36 22 L44 30 L36 38 L28 30 Z'/%3E%3Ccircle cx='36' cy='30' r='3'/%3E%3Cpath d='M0 54 L18 54 M54 54 L72 54 M0 18 L18 18 M54 18 L72 18'/%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%23808080' stroke-opacity='0.10' stroke-width='1'%3E%3Cpath d='M36 4 L50 18 L50 36 L36 50 L22 36 L22 18 Z'/%3E%3Cpath d='M36 22 L44 30 L36 38 L28 30 Z'/%3E%3Ccircle cx='36' cy='30' r='3'/%3E%3Cpath d='M0 54 L18 54 M54 54 L72 54 M0 18 L18 18 M54 18 L72 18'/%3E%3C/g%3E%3C/svg%3E");
 }
 .dark .girih-bg {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%236ca6c9' stroke-opacity='0.08' stroke-width='1'%3E%3Cpath d='M36 4 L50 18 L50 36 L36 50 L22 36 L22 18 Z'/%3E%3Cpath d='M36 22 L44 30 L36 38 L28 30 Z'/%3E%3Ccircle cx='36' cy='30' r='3'/%3E%3Cpath d='M0 54 L18 54 M54 54 L72 54 M0 18 L18 18 M54 18 L72 18'/%3E%3C/g%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%23b0b8c0' stroke-opacity='0.10' stroke-width='1'%3E%3Cpath d='M36 4 L50 18 L50 36 L36 50 L22 36 L22 18 Z'/%3E%3Cpath d='M36 22 L44 30 L36 38 L28 30 Z'/%3E%3Ccircle cx='36' cy='30' r='3'/%3E%3Cpath d='M0 54 L18 54 M54 54 L72 54 M0 18 L18 18 M54 18 L72 18'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 /* ---------- Custom scrollbars ---------- */

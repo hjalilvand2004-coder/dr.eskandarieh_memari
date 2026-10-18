@@ -8,7 +8,11 @@ import { AlertTriangle, Info } from "lucide-react";
 /** برچسب اجباری داده نمایشی — در همه صفحات مرتبط درج می‌شود */
 export function DemoBadge({ className = "" }: { className?: string }) {
   return (
-    <Badge variant="outline" className={`gap-1 border-copper/60 bg-copper/10 text-copper dark:text-[#d98d5f] text-[11px] ${className}`} title="این داده صوری است و نباید در رساله استناد شود">
+    <Badge
+      variant="outline"
+      className={`gap-1 border-copper/60 bg-copper/10 text-copper text-[11px] ${className}`}
+      title="این داده صوری است و نباید در رساله استناد شود"
+    >
       <AlertTriangle className="h-3 w-3" aria-hidden />
       داده نمایشی ـ فاقد اعتبار برای استناد علمی
     </Badge>
@@ -36,11 +40,15 @@ export function SectionHeader({
   actions?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+    <div className="flex flex-wrap items-start justify-between gap-3 mb-5">
       <div className="flex items-start gap-3">
-        {icon && <div className="mt-0.5 text-primary [&>svg]:h-5 [&>svg]:w-5">{icon}</div>}
+        {icon && (
+          <span className="mt-0.5 grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-primary/12 via-turquoise/10 to-copper/10 text-primary dark:text-turquoise border border-ring/20 [&>svg]:h-5 [&>svg]:w-5 shadow-sm">
+            {icon}
+          </span>
+        )}
         <div>
-          <h2 className="text-lg font-bold tracking-tight">{title}</h2>
+          <h2 className="text-lg font-extrabold tracking-tight">{title}</h2>
           {subtitle && <p className="text-sm text-muted-foreground mt-0.5 max-w-2xl leading-6">{subtitle}</p>}
         </div>
       </div>
@@ -48,6 +56,13 @@ export function SectionHeader({
     </div>
   );
 }
+
+const TONE_CHIP: Record<string, string> = {
+  default: "from-muted-foreground/15 to-transparent text-foreground",
+  turquoise: "from-turquoise/20 to-transparent text-turquoise-deep dark:text-turquoise",
+  copper: "from-copper/20 to-transparent text-copper",
+  lapis: "from-lapis/20 to-transparent text-lapis dark:text-lapis",
+};
 
 export function StatCard({
   label,
@@ -64,24 +79,29 @@ export function StatCard({
   icon?: React.ReactNode;
   tone?: "default" | "turquoise" | "copper" | "lapis";
 }) {
-  const toneCls =
-    tone === "turquoise"
-      ? "text-turquoise-deep dark:text-turquoise"
-      : tone === "copper"
-        ? "text-copper dark:text-[#d98d5f]"
-        : tone === "lapis"
-          ? "text-lapis dark:text-lapis"
-          : "text-foreground";
   return (
-    <Card className="relative overflow-hidden">
-      <div className="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-turquoise/60 via-primary/50 to-copper/50" aria-hidden />
+    <Card className="relative overflow-hidden group">
+      {/* نوار رنگی لبه راست */}
+      <div className="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-turquoise/70 via-primary/50 to-copper/50" aria-hidden />
+      {/* هاله نرم گوشه */}
+      <div
+        className="pointer-events-none absolute -top-10 -left-8 h-28 w-28 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{ background: "var(--glow-a)", filter: "blur(36px)" }}
+        aria-hidden
+      />
       <CardContent className="p-4">
         <div className="flex items-center justify-between gap-2">
           <span className="text-xs text-muted-foreground">{label}</span>
-          {icon && <span className="text-muted-foreground [&>svg]:h-4 [&>svg]:w-4">{icon}</span>}
+          {icon && (
+            <span className={`grid h-8.5 w-8.5 place-items-center rounded-xl bg-gradient-to-br border border-border/50 shadow-sm [&>svg]:h-4 [&>svg]:w-4 ${TONE_CHIP[tone]}`}>
+              {icon}
+            </span>
+          )}
         </div>
-        <div className={`mt-1.5 flex items-baseline gap-1 ${toneCls}`}>
-          <span className="text-2xl font-bold num">{value}</span>
+        <div className="mt-1.5 flex items-baseline gap-1">
+          <span className="text-[26px] font-extrabold num tracking-tight bg-gradient-to-l from-foreground to-foreground/75 bg-clip-text text-transparent">
+            {value}
+          </span>
           {unit && <span className="text-xs text-muted-foreground">{unit}</span>}
         </div>
         {hint && <p className="mt-1 text-[11px] text-muted-foreground leading-4">{hint}</p>}

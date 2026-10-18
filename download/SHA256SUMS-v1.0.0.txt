@@ -1,2 +1,0 @@
-ff5a61538f5c5f1fb037ec71dee36af7680e45667c3eac1ec82b43a413947263  Shiraz-Atlas-v1.0.0-Portable.zip
-f3d5131bdcf9fa3befb038af35c801699118d485f3ed32eefeaec3e762d296e3  Shiraz-Atlas-v1.0.0-Source.zip

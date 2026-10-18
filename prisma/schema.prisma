@@ -271,3 +271,12 @@ model AuditEvent {
   detail    String?
   createdAt DateTime @default(now())
 }
+
+// تنظیمات سراسری سامانه (مثلاً تم فعال که ادمین در زمان اجرا تغییر می‌دهد)
+model SystemSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique // مثل "theme.skin"
+  value     String
+  updatedBy String?
+  updatedAt DateTime @updatedAt
+}

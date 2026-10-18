@@ -1,0 +1,5 @@
+1:"$Sreact.fragment"
+2:I[97367,["/_next/static/chunks/33d3f2c0cda968c7.js"],"ViewportBoundary"]
+3:I[97367,["/_next/static/chunks/33d3f2c0cda968c7.js"],"MetadataBoundary"]
+4:"$Sreact.suspense"
+0:{"buildId":"sMN_yige2t2GdIQtdfRiD","rsc":["$","$1","h",{"children":[null,["$","$L2",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$L3",null,{"children":["$","$4",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"شیراز | اطلس هوشمند ریخت‌شناسی و انرژی"}],["$","meta","1",{"name":"description","content":"محیط یکپارچه مدیریت پژوهش، تحلیل فضایی، شبیه‌سازی و ارزیابی مدل — رساله دکتری معماری: تبیین الگوهای ریخت‌شناسی در بافت تاریخی با تأکید بر کارایی انرژی (نمونه پژوهشی: بافت تاریخی شیراز)"}],["$","meta","2",{"name":"author","content":"دکتر سارا اسکندریه - شرکت ماه افزارهوشمندرسا MahAI.ir"}]]}]}]}],null]}],"loading":null,"isPartial":false}

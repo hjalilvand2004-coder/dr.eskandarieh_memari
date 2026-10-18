@@ -1,0 +1,15 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/assistant/route": "/api/assistant",
+  "/api/atlas/route": "/api/atlas",
+  "/api/bootstrap/route": "/api/bootstrap",
+  "/api/datasets/route": "/api/datasets",
+  "/api/ml/route": "/api/ml",
+  "/api/project/route": "/api/project",
+  "/api/route": "/api",
+  "/api/scenarios/route": "/api/scenarios",
+  "/api/settings/route": "/api/settings",
+  "/api/validation/route": "/api/validation",
+  "/page": "/"
+}

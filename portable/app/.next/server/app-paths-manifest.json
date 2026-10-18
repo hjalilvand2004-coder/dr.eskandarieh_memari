@@ -1,0 +1,15 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/assistant/route": "app/api/assistant/route.js",
+  "/api/atlas/route": "app/api/atlas/route.js",
+  "/api/bootstrap/route": "app/api/bootstrap/route.js",
+  "/api/datasets/route": "app/api/datasets/route.js",
+  "/api/ml/route": "app/api/ml/route.js",
+  "/api/project/route": "app/api/project/route.js",
+  "/api/route": "app/api/route.js",
+  "/api/scenarios/route": "app/api/scenarios/route.js",
+  "/api/settings/route": "app/api/settings/route.js",
+  "/api/validation/route": "app/api/validation/route.js",
+  "/page": "app/page.js"
+}

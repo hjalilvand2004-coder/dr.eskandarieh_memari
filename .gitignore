@@ -54,6 +54,8 @@ server.log
 /skills/
 # portable build artifacts
 /dist/
+# portable runtime IS intentionally committed for zero-install run from the repo
+!/portable/**/node_modules/
 
 # deliverables & runtime artifacts (build products, not source)
 /download/

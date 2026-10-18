@@ -1,0 +1,11 @@
+# Line endings: Windows launchers must be CRLF, shell scripts LF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.sh text eol=lf
+# Binary artifacts must never be mangled
+portable/runtime/** binary
+portable/app/db/*.db binary
+*.node binary
+*.exe binary
+*.woff binary
+*.woff2 binary

@@ -159,3 +159,21 @@ Stage Summary:
 - مخزن: github.com/hjalilvand2004-coder/dr.eskandarieh_memari (main + ۲ تگ + README فارسی)
 - Release: .../releases/tag/v1.1.0 با لینک دائمی دانلود هر ۴ فایل — مشکل تکراری «دریافت نشدن زیپ» دیگر برطرف است
 - تاریخچه گیت اکنون کاملاً تمیز از فایل‌های حجیم است
+
+---
+Task ID: 9
+Agent: main (Z.ai)
+Task: قراردادن کل ساختار اجرای قابل حمل (BAT + ران‌تایم + اپ + DB) داخل مخزن گیت‌هاب و پوش (درخواست کاربر: اجرا روی لپ‌تاپ بدون پایتون/پای‌چارم با دوبار کلیک روی فایل‌های Bat)
+
+Work Log:
+- ساخت پوشه portable/ در ریشه مخزن از ZIP ویندوزی سالم (DB پاک): START-WINDOWS.bat، شروع-سامانه.bat، README-فارسی، VERSION، CHANGELOG، env.example، runtime/windows-x64/node.exe (82MB)، app استندالون کامل (node_modules ردیابی‌شده + .next + db)
+- رفع اشکال نسخه: هر دو لانچر v1.0.0 بودند → v1.1.0 (در portable/ و dist/)
+- START-MAC-LINUX.sh جدید برای کپی مخزن: اول ران‌تایم همراه، بعد node سیستم، در غیر این صورت راهنمای دریافت ZIP کامل از Releases
+- .gitattributes (bat=CRLF، sh=LF، باینری‌ها binary) + استثنای .gitignore برای node_modules پرتابل + حذف app/.env مطلقِ باقی‌مانده از محیط ساخت
+- تست دود از خود portable/ (۴/۴ سبز) و سپس تست از کلون تازه /tmp (root/bootstrap/OLS همه سبز) — شبیه‌سازی دقیق لپ‌تاپ کاربر
+- پوش: ۱۶۱۷ فایل؛ هشدار GH001 برای node.exe 81.83MB (فقط هشدار، زیر سقف ۱۰۰MB)؛ main → 73f3637 روی گیت‌هاب
+- راستی‌آزمایی API: پوشه portable/ با ۹ آیتم روی گیت‌هاب نمایان است
+
+Stage Summary:
+- مخزن اکنون هم سورس کامل و هم نسخه اجرای قابل حمل ویندوز را دارد؛ دانلود ZIP مخزن → portable/START-WINDOWS.bat → اجرا بدون هیچ پیش‌نیازی
+- ران‌تایم‌های مک/لینوکس (>100MB سقف گیت‌هاب) فقط در Release ZIPها هستند؛ در مخزن با node سیستم جایگزین می‌شوند

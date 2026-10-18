@@ -253,3 +253,16 @@ Work Log:
 
 Stage Summary:
 - فایل تشریحی آماده و راستی‌آزمایی‌شده در download/ است؛ هیچ تغییری در سورس سامانه داده نشد و پوشی انجام نشد (خارج از دامنه مجوز قبلی)
+
+---
+Task ID: 14
+Agent: main (Z.ai)
+Task: افزودن فایل HTML تشریحی به مخزن گیت‌هاب (درخواست صریح کاربر)
+
+Work Log:
+- پوشه download/ در .gitignore است → کپی فایل به مکان استاندارد مخزن: docs/Shiraz-Atlas-System-Overview.html (68KB خودکفا)
+- افزودن بخش «📖 معرفی تشریحی سامانه» به README با لینک فایل + پیش‌نمایش زنده raw.githack
+- کامیت و پوش main با توکن
+
+Stage Summary:
+- فایل تشریحی اکنون در مخزن عمومی است: docs/Shiraz-Atlas-System-Overview.html + لینک از README

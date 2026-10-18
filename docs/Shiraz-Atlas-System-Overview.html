@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>شیراز | اطلس هوشمند ریخت‌شناسی و انرژی — تشریح جامع سامانه</title>
+<meta name="description" content="تشریح جامع، ساختار، کارکردها و رویکرد علمی سامانه اطلس هوشمند ریخت‌شناسی و انرژی بافت تاریخی شیراز">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+<noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
+<style>
+/* ═══════════════════════════ متغیرهای پایه ═══════════════════════════ */
+:root{
+  --bg:#0a1424; --bg2:#0d1a2e; --panel:rgba(255,255,255,.05);
+  --panel2:rgba(255,255,255,.028);
+  --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+  --gold:#ffd76b; --gold2:#f5b93e; --turq:#2dd4bf; --turq2:#17877d;
+  --copper:#e0925c; --rose:#f06292; --lapis:#4d94d8; --violet:#8b7cf8;
+  --ink:#f7efdd; --muted:rgba(247,239,221,.66); --faint:rgba(247,239,221,.42);
+  --grad-main:linear-gradient(120deg,#ffd76b,#2dd4bf 55%,#4d94d8);
+  --grad-gold:linear-gradient(120deg,#ffd76b,#f5b93e,#e0925c);
+  --r-lg:22px; --r-md:16px; --r-sm:10px;
+  --shadow:0 18px 50px -18px rgba(0,0,0,.55);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+@media print{
+  .reveal{opacity:1!important;transform:none!important}
+  .bg-fx,.girih,.orb,#stars,#progress,#toTop,header{display:none!important}
+  body{background:#fff;color:#111}
+}
+body{
+  font-family:'Vazirmatn','Segoe UI',Tahoma,sans-serif;
+  background:var(--bg); color:var(--ink);
+  line-height:1.9; overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:rgba(45,212,191,.35); color:#fff}
+::-webkit-scrollbar{width:11px}
+::-webkit-scrollbar-track{background:#081020}
+::-webkit-scrollbar-thumb{background:linear-gradient(#1c3a5e,#123049);border-radius:8px;border:2px solid #081020}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(#2dd4bf55,#17877d88)}
+
+/* ═══════════ پس‌زمینه سراسری: هاله‌ها + نقش گره‌چینی ═══════════ */
+.bg-fx{position:fixed;inset:0;z-index:-2;overflow:hidden;background:
+  radial-gradient(1100px 620px at 85% -8%, rgba(45,212,191,.10), transparent 62%),
+  radial-gradient(950px 640px at 8% 12%, rgba(77,148,216,.09), transparent 60%),
+  radial-gradient(1000px 700px at 50% 108%, rgba(245,185,62,.075), transparent 62%),
+  linear-gradient(180deg,#0a1424,#0c1830 55%,#0a1526)}
+.girih{position:fixed;inset:0;z-index:-1;opacity:.05;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%23ffd76b' stroke-width='1'%3E%3Cpath d='M60 8 76 44 112 60 76 76 60 112 44 76 8 60 44 44z'/%3E%3Cpath d='M60 26 68 52 94 60 68 68 60 94 52 68 26 60 52 52z'/%3E%3Ccircle cx='60' cy='60' r='10'/%3E%3C/g%3E%3C/svg%3E");
+  background-size:150px}
+.orb{position:fixed;border-radius:50%;filter:blur(90px);z-index:-1;pointer-events:none;opacity:.5}
+.orb-a{width:430px;height:430px;background:rgba(45,212,191,.13);top:-120px;left:-110px;animation:drift 22s ease-in-out infinite alternate}
+.orb-b{width:380px;height:380px;background:rgba(245,185,62,.10);bottom:-130px;right:-90px;animation:drift 26s ease-in-out infinite alternate-reverse}
+.orb-c{width:300px;height:300px;background:rgba(139,124,248,.10);top:44%;right:-140px;animation:drift 30s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(70px,50px) scale(1.14)}}
+
+/* ═══════════ نوار پیشرفت + هدر ═══════════ */
+#progress{position:fixed;top:0;right:0;height:3px;width:0;z-index:99;
+  background:var(--grad-gold);box-shadow:0 0 14px rgba(255,215,107,.7);transition:width .12s linear}
+header{position:fixed;top:0;right:0;left:0;z-index:90;
+  background:rgba(10,20,36,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--line)}
+.nav{max-width:1240px;margin:auto;display:flex;align-items:center;gap:14px;padding:10px 22px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;white-space:nowrap}
+.brand .logo{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;
+  background:linear-gradient(135deg,#17877d,#143954 60%,#b4693b);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),0 6px 18px -6px rgba(45,212,191,.5)}
+.brand small{display:block;font-weight:400;font-size:10px;color:var(--faint)}
+.nav-links{display:flex;gap:2px;margin-inline-start:auto;overflow-x:auto;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:12.5px;padding:7px 12px;border-radius:99px;white-space:nowrap;transition:.25s}
+.nav-links a:hover{color:var(--gold);background:rgba(255,215,107,.09)}
+.ver-chip{font-size:11px;padding:5px 12px;border-radius:99px;flex-shrink:0;
+  border:1px solid rgba(45,212,191,.35);color:var(--turq);background:rgba(45,212,191,.07)}
+@media(max-width:880px){.nav-links{display:none}}
+
+/* ═══════════ قالب عمومی بخش‌ها ═══════════ */
+main{max-width:1240px;margin:auto;padding:0 22px}
+section{padding:86px 0 30px;scroll-margin-top:70px}
+.sec-head{text-align:center;margin-bottom:46px}
+.sec-head .kicker{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.5px;color:var(--turq);
+  border:1px solid rgba(45,212,191,.3);background:rgba(45,212,191,.06);padding:5px 16px;border-radius:99px;margin-bottom:14px}
+.sec-head h2{font-size:clamp(1.55rem,3.6vw,2.35rem);font-weight:900;line-height:1.5}
+.sec-head h2 em{font-style:normal;background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sec-head p{color:var(--muted);max-width:760px;margin:12px auto 0;font-size:14.5px}
+.orn{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;color:var(--gold)}
+.orn::before,.orn::after{content:"";height:1px;width:min(150px,22vw);background:linear-gradient(90deg,transparent,rgba(255,215,107,.5))}
+.orn::after{background:linear-gradient(270deg,transparent,rgba(255,215,107,.5))}
+
+/* انیمیشن ظهور هنگام اسکرول */
+.reveal{opacity:0;transform:translateY(34px);transition:opacity .8s cubic-bezier(.2,.7,.3,1),transform .8s cubic-bezier(.2,.7,.3,1)}
+.reveal.in{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}.d5{transition-delay:.4s}.d6{transition-delay:.48s}
+
+/* ═══════════ قهرمان ═══════════ */
+.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;padding:120px 22px 90px;overflow:hidden}
+#stars{position:absolute;inset:0;z-index:0}
+.hero-inner{position:relative;z-index:2;max-width:960px}
+.hero-chip{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;color:var(--muted);
+  border:1px solid var(--line2);background:rgba(255,255,255,.05);padding:8px 20px;border-radius:99px;margin-bottom:26px;
+  backdrop-filter:blur(8px)}
+.hero-chip .dot{width:8px;height:8px;border-radius:50%;background:var(--turq);box-shadow:0 0 10px var(--turq);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.45);opacity:.55}}
+h1{font-size:clamp(2.1rem,6.4vw,4.1rem);font-weight:950;line-height:1.55;letter-spacing:-.5px}
+h1 .grad{background:var(--grad-main);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:shimmer 7s ease-in-out infinite}
+@keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.hero-sub{font-size:clamp(1rem,2.4vw,1.28rem);color:var(--muted);margin-top:14px;font-weight:300}
+.thesis{margin:34px auto 0;max-width:820px;padding:20px 26px;border-radius:var(--r-md);position:relative;text-align:right;
+  background:linear-gradient(160deg,rgba(255,215,107,.07),rgba(45,212,191,.04));border:1px solid rgba(255,215,107,.2)}
+.thesis .tag{position:absolute;top:-13px;right:22px;font-size:11px;padding:3px 14px;border-radius:99px;
+  background:linear-gradient(120deg,#ffd76b,#f5b93e);color:#3a2506;font-weight:800}
+.thesis p{font-size:14.5px;color:var(--ink)}
+.thesis p b{color:var(--gold)}
+.counters{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:44px}
+.count{min-width:130px;padding:18px 22px;border-radius:var(--r-md);background:var(--panel);border:1px solid var(--line);
+  backdrop-filter:blur(12px);transition:.35s}
+.count:hover{transform:translateY(-5px);border-color:rgba(255,215,107,.4);box-shadow:0 14px 34px -14px rgba(255,215,107,.25)}
+.count b{display:block;font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:950;
+  background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent}
+.count span{font-size:11.5px;color:var(--muted)}
+.scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:2;color:var(--faint);font-size:11px;
+  display:flex;flex-direction:column;align-items:center;gap:6px;animation:bob 2.2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,9px)}}
+.scroll-hint svg{width:20px;height:20px;stroke:var(--gold)}
+
+/* ═══════════ کارت‌های شیشه‌ای عمومی ═══════════ */
+.grid{display:grid;gap:18px}
+.g4{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.card{position:relative;border-radius:var(--r-lg);padding:26px;background:linear-gradient(165deg,rgba(255,255,255,.055),rgba(255,255,255,.018));
+  border:1px solid var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:var(--shadow);
+  transition:transform .4s cubic-bezier(.2,.7,.3,1),border-color .4s,box-shadow .4s;overflow:hidden}
+.card::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(120deg,rgba(255,255,255,.09),transparent 32%);opacity:.55}
+.card:hover{transform:translateY(-7px);border-color:var(--line2);box-shadow:0 26px 60px -20px rgba(0,0,0,.65)}
+.card h3{font-size:16.5px;font-weight:800;margin-bottom:9px;display:flex;align-items:center;gap:10px}
+.card p{font-size:13.5px;color:var(--muted)}
+.ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;flex-shrink:0;margin-bottom:16px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 10px 24px -10px rgba(0,0,0,.5)}
+.ico svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.i-gold{background:linear-gradient(135deg,#f5b93e,#b4693b)}
+.i-turq{background:linear-gradient(135deg,#2dd4bf,#0e6f66)}
+.i-lapis{background:linear-gradient(135deg,#4d94d8,#1c4d7e)}
+.i-rose{background:linear-gradient(135deg,#f06292,#9c3d5c)}
+.i-violet{background:linear-gradient(135deg,#8b7cf8,#4d3f96)}
+.i-copper{background:linear-gradient(135deg,#e0925c,#8f5327)}
+
+/* ═══════════ معماری فنی ═══════════ */
+.stack{display:flex;flex-direction:column;gap:0;max-width:900px;margin:auto;position:relative}
+.layer{position:relative;border-radius:var(--r-md);padding:20px 24px;background:linear-gradient(165deg,rgba(255,255,255,.05),rgba(255,255,255,.015));
+  border:1px solid var(--line);backdrop-filter:blur(12px);transition:.35s}
+.layer:hover{border-color:rgba(45,212,191,.4);transform:scale(1.015)}
+.layer + .conn{align-self:center}
+.layer .ly-head{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.layer .ly-num{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-weight:900;font-size:14px;flex-shrink:0;
+  background:linear-gradient(135deg,#1b3a5c,#12283f);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);color:var(--gold)}
+.layer h4{font-size:15px;font-weight:800}
+.layer h4 small{display:block;font-size:11px;color:var(--faint);font-weight:400}
+.layer .chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{font-size:11px;padding:4px 12px;border-radius:99px;border:1px solid var(--line2);color:var(--muted);background:rgba(255,255,255,.04);transition:.25s}
+.layer:hover .chip{border-color:rgba(45,212,191,.35);color:var(--ink)}
+.conn{height:34px;width:2px;background:linear-gradient(180deg,var(--turq),rgba(45,212,191,.08));position:relative;overflow:hidden}
+.conn::after{content:"";position:absolute;top:-12px;right:-1.5px;width:5px;height:12px;border-radius:4px;
+  background:var(--gold);box-shadow:0 0 8px var(--gold);animation:flow 1.5s linear infinite}
+@keyframes flow{to{transform:translateY(46px)}}
+</style>
+</head>
+<body>
+<div class="bg-fx"></div><div class="girih"></div><div class="orb orb-a"></div><div class="orb orb-b"></div><div class="orb orb-c"></div>
+<div id="progress"></div>
+</content>
+</invoke>
+<style>
+/* ═══════════ ماژول‌ها ═══════════ */
+.mods{grid-template-columns:repeat(auto-fit,minmax(285px,1fr))}
+.mod{cursor:default}
+.mod .num{position:absolute;top:14px;left:18px;font-size:34px;font-weight:950;color:rgba(255,255,255,.055);line-height:1}
+.mod:hover .num{color:rgba(255,215,107,.14)}
+.mod h3{font-size:15.5px}
+.mod .fn{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--muted)}
+.mod .fn b{color:var(--turq);font-weight:700}
+.mod-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.mtag{font-size:10.5px;padding:3px 10px;border-radius:99px;background:rgba(45,212,191,.08);border:1px solid rgba(45,212,191,.22);color:var(--turq)}
+.mtag.gold{background:rgba(255,215,107,.08);border-color:rgba(255,215,107,.25);color:var(--gold)}
+.mtag.rose{background:rgba(240,98,146,.08);border-color:rgba(240,98,146,.25);color:var(--rose)}
+
+/* ═══════════ چرخه علمی (پایپ‌لاین) ═══════════ */
+.pipe{position:relative;max-width:980px;margin:auto;display:grid;grid-template-columns:1fr 1fr;gap:16px 54px;padding:10px 0}
+.pipe::before{content:"";position:absolute;top:14px;bottom:14px;right:50%;width:2px;transform:translateX(50%);
+  background:linear-gradient(180deg,rgba(45,212,191,.05),rgba(45,212,191,.55),rgba(255,215,107,.55),rgba(255,215,107,.05))}
+.step{position:relative;background:linear-gradient(165deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid var(--line);
+  border-radius:var(--r-md);padding:18px 58px 18px 20px;transition:.35s;backdrop-filter:blur(10px)}
+.step:hover{transform:translateY(-4px);border-color:rgba(255,215,107,.45);box-shadow:0 18px 40px -18px rgba(0,0,0,.6)}
+.step .n{position:absolute;right:-27px;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;
+  display:grid;place-items:center;font-weight:950;font-size:16px;color:#0a1424;
+  background:linear-gradient(135deg,#ffd76b,#f5b93e);box-shadow:0 0 0 6px rgba(255,215,107,.12),0 10px 22px -8px rgba(245,185,62,.55);z-index:2}
+.step:nth-child(even){transform:translateX(0)}
+.step h4{font-size:14.5px;font-weight:800;color:var(--gold)}
+.step p{font-size:12.5px;color:var(--muted);margin-top:5px}
+.step .lt{display:inline-block;font-size:10.5px;margin-top:8px;padding:2px 10px;border-radius:99px;background:rgba(77,148,216,.1);border:1px solid rgba(77,148,216,.3);color:#9cc4ec;direction:ltr}
+@media(max-width:760px){
+  .pipe{grid-template-columns:1fr;gap:14px}
+  .pipe::before{right:22px;transform:none}
+  .step{margin-inline-start:44px;padding:16px 16px 16px 14px}
+  .step .n{right:-34px;width:40px;height:40px;font-size:14px}
+}
+
+/* ═══════════ شاخص‌ها ═══════════ */
+.inds{grid-template-columns:repeat(auto-fit,minmax(310px,1fr))}
+.ind{padding:22px}
+.ind .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.ind h3{font-size:14.5px;font-weight:800}
+.ind .formula{direction:ltr;text-align:left;font-family:'Cascadia Code',Consolas,monospace;font-size:12.5px;color:var(--turq);
+  background:rgba(45,212,191,.07);border:1px solid rgba(45,212,191,.2);border-radius:10px;padding:7px 14px;margin:12px 0;display:inline-block}
+.ind p{font-size:12.5px}
+.ind .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.badge{font-size:10px;padding:3px 11px;border-radius:99px;border:1px solid var(--line2);color:var(--muted)}
+.badge.ok{background:rgba(45,212,191,.09);border-color:rgba(45,212,191,.35);color:var(--turq)}
+.badge.sim{background:rgba(245,185,62,.1);border-color:rgba(245,185,62,.4);color:var(--gold)}
+.badge.warn{background:rgba(240,98,146,.09);border-color:rgba(240,98,146,.3);color:var(--rose)}
+
+/* ═══════════ پیوند انرژی ═══════════ */
+.energy-wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:26px;align-items:start}
+@media(max-width:900px){.energy-wrap{grid-template-columns:1fr}}
+.chain{display:flex;flex-direction:column;gap:10px}
+.link-card{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:center;padding:15px 18px;border-radius:var(--r-md);
+  background:linear-gradient(165deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid var(--line);transition:.3s}
+.link-card:hover{border-color:rgba(240,98,146,.45);transform:translateX(-5px)}
+.link-card .f{direction:ltr;text-align:center;font-family:'Cascadia Code',Consolas,monospace;font-weight:700;font-size:12.5px;
+  padding:9px 6px;border-radius:12px;color:#ffe9b3;background:linear-gradient(135deg,rgba(180,105,59,.35),rgba(245,185,62,.18));
+  box-shadow:inset 0 0 0 1px rgba(255,215,107,.2)}
+.link-card b{font-size:13.5px;display:block;color:var(--ink)}
+.link-card span{font-size:12px;color:var(--muted)}
+.energy-note{border-radius:var(--r-lg);padding:26px;background:linear-gradient(160deg,rgba(240,98,146,.07),rgba(255,215,107,.04));
+  border:1px solid rgba(240,98,146,.22)}
+.energy-note h3{font-size:16px;font-weight:800;margin-bottom:12px;color:var(--gold)}
+.energy-note p{font-size:13px;color:var(--muted);margin-bottom:10px}
+.energy-note ul{list-style:none;margin-top:6px}
+.energy-note li{font-size:12.5px;color:var(--muted);padding:7px 26px 7px 0;position:relative}
+.energy-note li::before{content:"◆";position:absolute;right:2px;top:7px;font-size:9px;color:var(--turq)}
+.energy-note li b{color:var(--ink)}
+
+/* ═══════════ صداقت علمی ═══════════ */
+.honest{background:linear-gradient(160deg,rgba(45,212,191,.05),rgba(255,215,107,.03));border:1px solid rgba(45,212,191,.22);border-radius:26px;padding:38px clamp(20px,4vw,48px)}
+.h-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:8px}
+.h-card{padding:20px;border-radius:var(--r-md);background:rgba(10,20,36,.5);border:1px solid var(--line);transition:.3s}
+.h-card:hover{border-color:rgba(45,212,191,.4);transform:translateY(-4px)}
+.h-card .q{font-size:13.5px;font-weight:800;color:var(--turq);margin-bottom:8px;display:flex;gap:9px;align-items:center}
+.h-card p{font-size:12.5px;color:var(--muted)}
+.h-card p code{font-size:11.5px;direction:ltr;display:inline-block;background:rgba(255,255,255,.06);padding:2px 8px;border-radius:6px;color:var(--gold)}
+
+/* ═══════════ تم‌ها ═══════════ */
+.themes{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.theme-chip{display:flex;align-items:center;gap:10px;padding:11px 18px;border-radius:99px;border:1px solid var(--line);
+  background:rgba(255,255,255,.035);transition:.3s;cursor:default}
+.theme-chip:hover{transform:translateY(-4px) scale(1.04);border-color:var(--line2);box-shadow:0 12px 30px -12px rgba(0,0,0,.6)}
+.theme-chip .sw{display:flex}
+.theme-chip .sw i{width:15px;height:15px;border-radius:50%;display:block;margin-inline-start:-4px;border:2px solid #0a1424}
+.theme-chip span{font-size:12.5px;font-weight:600}
+
+/* ═══════════ استقرار ═══════════ */
+.dep{grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+.dep .path{direction:ltr;display:block;font-family:Consolas,monospace;font-size:11.5px;color:#9cc4ec;background:rgba(12,30,52,.8);
+  border:1px solid rgba(77,148,216,.25);border-radius:10px;padding:9px 14px;margin-top:12px;text-align:left}
+
+/* ═══════════ پانویس ═══════════ */
+footer{margin-top:80px;border-top:1px solid var(--line);padding:40px 22px 46px;text-align:center;position:relative}
+footer::before{content:"";position:absolute;top:-1px;right:50%;transform:translateX(50%);width:min(420px,60vw);height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+footer .att{font-size:14px;font-weight:800;background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent}
+footer p{font-size:12px;color:var(--faint);margin-top:8px}
+footer .stars-line{font-size:16px;color:var(--gold);letter-spacing:8px;margin-bottom:14px;opacity:.8}
+
+#toTop{position:fixed;bottom:26px;left:26px;width:46px;height:46px;border-radius:14px;border:1px solid var(--line2);z-index:80;
+  background:rgba(13,26,46,.85);backdrop-filter:blur(10px);color:var(--gold);font-size:19px;cursor:pointer;opacity:0;pointer-events:none;transition:.35s}
+#toTop.show{opacity:1;pointer-events:auto}
+#toTop:hover{transform:translateY(-4px);border-color:var(--gold)}
+</style>
+
+<!-- ═══════════════════ هدر ═══════════════════ -->
+<header>
+  <div class="nav">
+    <div class="brand">
+      <span class="logo"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><path d="M16.2 7.8 14 14l-6.2 2.2L10 10z"/></svg></span>
+      <span>اطلس هوشمند شیراز<small>ریخت‌شناسی × کارایی انرژی</small></span>
+    </div>
+    <nav class="nav-links">
+      <a href="#intro">معرفی</a>
+      <a href="#stack">معماری فنی</a>
+      <a href="#modules">۱۱ ماژول</a>
+      <a href="#pipeline">چرخه علمی</a>
+      <a href="#indicators">شاخص‌ها</a>
+      <a href="#energy">انرژی</a>
+      <a href="#honesty">صداقت علمی</a>
+      <a href="#themes">تم‌ها</a>
+      <a href="#deploy">استقرار</a>
+    </nav>
+    <span class="ver-chip">نسخه ۱٫۲٫۰</span>
+  </div>
+</header>
+
+<!-- ═══════════════════ قهرمان ═══════════════════ -->
+<div class="hero">
+  <canvas id="stars"></canvas>
+  <div class="hero-inner">
+    <span class="hero-chip"><span class="dot"></span> سامانه ۱۰۰٪ آفلاین و پرتابل • داده‌ها کاملاً محلی</span>
+    <h1>شیراز <span style="color:var(--gold);opacity:.65">|</span> <span class="grad">اطلس هوشمند ریخت‌شناسی و انرژی</span></h1>
+    <p class="hero-sub">محیط یکپارچه مدیریت پژوهش، تحلیل فضایی، شبیه‌سازی و ارزیابی مدل</p>
+    <div class="thesis reveal">
+      <span class="tag">بستر دیجیتال رساله دکتری معماری</span>
+      <p>«تبیین الگوهای ریخت‌شناسی در بافت تاریخی با تأکید بر <b>کارایی انرژی</b> — نمونه پژوهشی: <b>بافت تاریخی شهر شیراز</b>» — سامانه‌ای که چرخه کامل یک پژوهش علمی، از مدیریت پرسش و فرضیه تا خروجی شکل قابل استناد، را در یک محیطِ هماهنگ و صادق گرد هم آورده است.</p>
+    </div>
+    <div class="counters">
+      <div class="count reveal d1"><b data-to="11">۰</b><span>ماژول تخصصی</span></div>
+      <div class="count reveal d2"><b data-to="11">۰</b><span>شاخص ریخت‌شناسی</span></div>
+      <div class="count reveal d3"><b data-to="51">۰</b><span>بنا در داده نمایشی</span></div>
+      <div class="count reveal d4"><b data-to="3">۰</b><span>بلوک بافت تاریخی</span></div>
+      <div class="count reveal d5"><b data-to="10">۰</b><span>تم گرافیکی × ۲ حالت</span></div>
+      <div class="count reveal d6"><b data-to="100" data-suffix="٪">۰</b><span>آفلاین و پرتابل</span></div>
+    </div>
+  </div>
+  <a class="scroll-hint" href="#intro" aria-label="ادامه"><span>کاوش کنید</span><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></a>
+</div>
+
+<main>
+<!-- ═══════════════════ معرفی ═══════════════════ -->
+<section id="intro">
+  <div class="sec-head reveal">
+    <span class="kicker">سامانه در یک نگاه</span>
+    <h2>یک <em>میز کار دیجیتال</em> برای پژوهش جدی</h2>
+    <p>اطلس هوشمند شیراز فقط یک وب‌اپ نیست؛ محیطی یکپارچه است که داده، هندسه، الگوریتم و استناد علمی را کنار هم می‌نشاند و در هر تصمیم، مرز میان «واقعی» و «نمایشی» را صادقانه اعلام می‌کند.</p>
+    <div class="orn">◆</div>
+  </div>
+  <div class="grid g4">
+    <div class="card reveal"><div class="ico i-gold"><svg viewBox="0 0 24 24"><path d="M3 5h18v14H3z"/><path d="M3 10h18M9 5v14"/></svg></div><h3>پژوهش یکپارچه</h3><p>از ثبت پرسش و فرضیه تا کانبان وظایف، منابع کتاب‌شناختی، تحلیل آماری و تولید شکل نهایی — همه چرخه پژوهش بدون خروج از سامانه طی می‌شود.</p></div>
+    <div class="card reveal d1"><div class="ico i-turq"><svg viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg></div><h3>علم واقعی، نه نمایش</h3><p>رگرسیون OLS با حل بسته، خوشه‌بندی K-Means با الگوریتم لوید، خودهمبستگی فضایی موران و هندسه چندضلعی واقعی — نه اعداد ساختگی با ظاهر علمی.</p></div>
+    <div class="card reveal d2"><div class="ico i-lapis"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 2v10l7-4"/></svg></div><h3>آفلاین و پرتابل</h3><p>بدون نیاز به اینترنت، پایتون یا هر پیش‌نیاز؛ با یک فایل BAT و ران‌تایم همراهِ Node.js، سامانه روی هر لپ‌تاپ ویندوزی اجرا می‌شود. داده‌ها هرگز از دستگاه خارج نمی‌شوند.</p></div>
+    <div class="card reveal d3"><div class="ico i-violet"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="4"/></svg></div><h3>شخصی‌سازی کامل</h3><p>۱۰ تم گرافیکی (از لاجورد میراثی شیراز تا شفق نئونی) در دو حالت روشن و تیره؛ ادمین در زمان اجرا تم سراسری را تغییر می‌دهد و برای همه کاربران ثبت می‌شود.</p></div>
+  </div>
+</section>
+
+<!-- ═══════════════════ معماری فنی ═══════════════════ -->
+<section id="stack">
+  <div class="sec-head reveal">
+    <span class="kicker">معماری و فناوری</span>
+    <h2>پنج <em>لایه</em>، یک بدنه منسجم</h2>
+    <p>سامانه با معماری استندالون ساخته شده تا بدون سرور خارجی، دیتابیس ابری یا سرویس اینترنتی، به‌صورت کامل روی دستگاه شما اجرا شود.</p>
+    <div class="orn">◆</div>
+  </div>
+  <div class="stack">
+    <div class="layer reveal"><div class="ly-head"><span class="ly-num">۵</span><h4>لایه اجرا و توزیع<small>Run &amp; Distribute</small></h4></div>
+      <div class="chips"><span class="chip">لانچر BAT ویندوز</span><span class="chip">اسکریپت SH مک/لینوکس</span><span class="chip">Node.js Runtime همراه</span><span class="chip">بسته ZIP نسخه‌دار</span><span class="chip">مخزن GitHub</span></div></div>
+    <div class="conn"></div>
+    <div class="layer reveal d1"><div class="ly-head"><span class="ly-num">۴</span><h4>لایه داده<small>Data Layer</small></h4></div>
+      <div class="chips"><span class="chip">Prisma 6 ORM</span><span class="chip">SQLite جاسازی‌شده</span><span class="chip">۱۴ مدل داده</span><span class="chip">Seed خودکار هنگام بوت</span><span class="chip">پشتیبان‌گیری با کپی فایل</span></div></div>
+    <div class="conn"></div>
+    <div class="layer reveal d2"><div class="ly-head"><span class="ly-num">۳</span><h4>لایه دانش و الگوریتم<small>Science Layer</small></h4></div>
+      <div class="chips"><span class="chip">OLS حل بسته + R²</span><span class="chip">K-Means (لوید)</span><span class="chip">موران I خودهمبستگی فضایی</span><span class="chip">هندسه چندضلعی واقعی</span><span class="chip">دیوار مشترک از هندسه</span><span class="chip">RNG بازتولیدپذیر</span></div></div>
+    <div class="conn"></div>
+    <div class="layer reveal d3"><div class="ly-head"><span class="ly-num">۲</span><h4>لایه بصری‌سازی و تعامل<small>Visualization Layer</small></h4></div>
+      <div class="chips"><span class="chip">ECharts 6</span><span class="chip">Three.js (وب‌جی‌ال سه‌بعدی)</span><span class="chip">MapLibre GL آفلاین</span><span class="chip">React Flow</span><span class="chip">نقشه SVG دوبعدی</span></div></div>
+    <div class="conn"></div>
+    <div class="layer reveal d4"><div class="ly-head"><span class="ly-num">۱</span><h4>لایه تجربه کاربری<small>Experience Layer</small></h4></div>
+      <div class="chips"><span class="chip">Next.js 16 استندالون</span><span class="chip">TypeScript</span><span class="chip">Tailwind CSS</span><span class="chip">RTL کامل + وزیرمتن</span><span class="chip">۱۰ تم × ۲ حالت</span><span class="chip">دسترسی نقش‌محور</span></div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════ ۱۱ ماژول ═══════════════════ -->
+<section id="modules">
+  <div class="sec-head reveal">
+    <span class="kicker">ساختار سامانه</span>
+    <h2>یازده <em>ماژول</em>، یک اکوسیستم پژوهشی</h2>
+    <p>هر ماژول یک ایستگاه از سفر پژوهش است؛ با هم، مسیر «پرسش ← داده ← تحلیل ← اعتبارسنجی ← تصمیم ← استناد» را پوشش می‌دهند.</p>
+    <div class="orn">◆</div>
+  </div>
+  <div class="grid mods">
+    <div class="card mod tilt reveal"><span class="num">۰۱</span><div class="ico i-gold"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></div><h3>داشبورد پژوهش</h3><p>نمای کلی پیشرفت و وضعیت؛ نقطه شروع هر نشست کاری با آمار زنده سامانه.</p><div class="fn"><b>کارکرد:</b> پیشرفت فصل‌ها، وضعیت وظایف، شمار پرسش/فرضیه/منبع، هشدار کیفیت داده و خلاصه وضعیت تحلیل‌ها.</div></div>
+    <div class="card mod tilt reveal d1"><span class="num">۰۲</span><div class="ico i-turq"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg></div><h3>میز پژوهش</h3><p>مدیریت کامل پرسش‌ها (Q)، فرضیه‌ها (H) با پیوند به پرسش، فصل‌ها با درصد پیشرفت واقعی و منابع.</p><div class="fn"><b>کارکرد:</b> کانبان وظایف، یادداشت‌های روش‌شناختی، کتاب‌شناسی + <b>دیاگرام ساختاری React Flow</b> و گراف نیرویی روابط پرسش/فرضیه/فصل.</div><div class="mod-tags"><span class="mtag">React Flow</span><span class="mtag gold">کانبان</span></div></div>
+    <div class="card mod tilt reveal d2"><span class="num">۰۳</span><div class="ico i-lapis"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div><h3>پایگاه داده و کیفیت</h3><p>مجموعه داده‌ها، فرهنگ داده (واژه‌نامه هر متغیر)، ورود فایل و کنترل کیفیت.</p><div class="fn"><b>کارکرد:</b> ثبت منشأ هر مجموعه داده، تعریف واحد و دامنه متغیرها، شناسایی داده ناقص و اعلام صریح وضعیت هر شاخص.</div></div>
+    <div class="card mod tilt reveal d3"><span class="num">۰۴</span><div class="ico i-turq"><svg viewBox="0 0 24 24"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg></div><h3>اطلس مکانی و ریخت‌شناسی</h3><p>نقشه تعاملی دوبعدی SVG و نمای سه‌بعدی MapLibre با پرتاب‌سازی ارتفاع واقعی بناها (ضریب نمایشی ×۱/×۲/×۳).</p><div class="fn"><b>کارکرد:</b> رنگ‌آمیزی شاخص‌محور بلوک‌ها و بناها، انتخاب مسی، پنل جزئیات هر بنا با ۱۰+ مقدار محاسبه‌شده از هندسه، مختصات واقعی بافت تاریخی شیراز.</div><div class="mod-tags"><span class="mtag">MapLibre 3D</span><span class="mtag gold">کاملاً آفلاین</span></div></div>
+    <div class="card mod tilt reveal d4"><span class="num">۰۵</span><div class="ico i-copper"><svg viewBox="0 0 24 24"><path d="M10 2v6L4 18a3 3 0 0 0 2.7 4h10.6A3 3 0 0 0 20 18L14 8V2"/><path d="M8 2h8"/><path d="M7 14h10"/></svg></div><h3>آزمایشگاه شبیه‌سازی</h3><p>تعریف مدل انرژی و سناریوی آزمایش، صف اجرا و پیکربندی موتور محاسباتی.</p><div class="fn"><b>کارکرد:</b> تا پیش از پیکربندی موتور شبیه‌سازی، پیام صریح «اتصال موتور شبیه‌سازی هنوز پیکربندی نشده است» نمایش داده می‌شود — بدون هیچ عدد ساختگی.</div><div class="mod-tags"><span class="mtag rose">پیکربندی‌پذیر</span></div></div>
+    <div class="card mod tilt reveal d5"><span class="num">۰۶</span><div class="ico i-violet"><svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 1 4 4c0 1.5-.8 2.6-1.7 3.4C13.5 10.2 13 11.5 13 13h-2c0-1.9.8-3.2 1.9-4.2C13.8 8 14 7 14 6a2 2 0 0 0-4 0"/><path d="M12 2a7 7 0 0 0-7 7c0 2 .8 3.5 2 4.6V19h3v-2h4v2h3v-5.4c1.2-1.1 2-2.6 2-4.6a7 7 0 0 0-7-7z" opacity=".4"/></svg></div><h3>آزمایشگاه علم داده</h3><p>کاوش داده (EDA)، رگرسیون و خوشه‌بندی با الگوریتم‌های واقعی — نه پوشش تصویری.</p><div class="fn"><b>کارکرد:</b> OLS با ضرایب، انحراف معیار و R²؛ K-Means با پراکندگی دوبعدی و <b>سه‌بعدی WebGL</b>، هاور تعاملی و خروجی PNG چاپی.</div><div class="mod-tags"><span class="mtag">OLS واقعی</span><span class="mtag">Three.js 3D</span></div></div>
+    <div class="card mod tilt reveal"><span class="num">۰۷</span><div class="ico i-gold"><svg viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg></div><h3>ارزیابی و اعتبارسنجی</h3><p>سنجه‌های استاندارد خطا و تحلیل الگوی فضایی برای قضاوت منصفانه درباره مدل.</p><div class="fn"><b>کارکرد:</b> MAE، RMSE، R²، NMBE و CV(RMSE) مطابق رویه‌های ارزیابی مدل + تحلیل خودهمبستگی فضایی موران برای تفسیر جغرافیایی متغیرها و خطا.</div><div class="mod-tags"><span class="mtag gold">Moran's I</span></div></div>
+    <div class="card mod tilt reveal d1"><span class="num">۰۸</span><div class="ico i-lapis"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M6 15l4-6 4 3 5-8"/></svg></div><h3>استودیو نمودار</h3><p>کارگاه ساخت شکل علمی: هر نمودار با کپشن فارسی، منشأ داده و پارامترهای دقیق ثبت می‌شود.</p><div class="fn"><b>کارکرد:</b> انتخاب نوع نمودار (پراکنده، خطی، ستونی، سه‌بعدی)، تنظیم عنوان/کپشن، خروجی PNG با کیفیت چاپ و SVG صادقانه (فقط وقتی واقعاً برداری است).</div></div>
+    <div class="card mod tilt reveal d2"><span class="num">۰۹</span><div class="ico i-rose"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg></div><h3>سناریوسازی و تصمیم</h3><p>آزمودن مداخلات کم‌مداخله و مقایسه اثر آن‌ها بر شاخص‌های ریخت‌شناسی و انرژی.</p><div class="fn"><b>کارکرد:</b> تعریف سناریو (تغییر نسبت بازشو، ارتفاع، اشغال)، محاسبه مجدد شاخص‌ها و مقایسه چشمی پیش/پس از مداخله برای پشتیبانی تصمیم.</div></div>
+    <div class="card mod tilt reveal d3"><span class="num">۱۰</span><div class="ico i-turq"><svg viewBox="0 0 24 24"><rect x="5" y="8" width="14" height="12" rx="3"/><path d="M12 8V4M8 4h8"/><circle cx="9.5" cy="13" r="1"/><circle cx="14.5" cy="13" r="1"/><path d="M9.5 17h5"/></svg></div><h3>دستیار پژوهشی</h3><p>پرسش و پاسخ از اسناد و داده‌های پروژه با فناوری بازیابی-افزوده (RAG) به‌صورت محلی.</p><div class="fn"><b>کارکرد:</b> یافتن پاسخ در متن پرسش‌ها، فرضیه‌ها، یادداشت‌ها و فرهنگ داده؛ پاسخ‌ها همیشه همراه ارجاع به سند مرجع — بدون پاسخ از خودباوری مدل.</div></div>
+    <div class="card mod tilt reveal d4"><span class="num">۱۱</span><div class="ico i-violet"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg></div><h3>درباره سامانه</h3><p>معماری، محدودیت‌ها، فهرست صداقت علمی و راهنمای اجرا؛ شفافیت کامل درباره «چه هست» و «چه نیست».</p><div class="fn"><b>کارکرد:</b> تفاوت قابلیت‌های اجراشده و مرحله‌بعدی، محدودیت داده نمایشی، نسخه‌ها و راهنمای بسته پرتابل.</div></div>
+  </div>
+</section>
+<!-- ═══════════════════ چرخه علمی ═══════════════════ -->
+<section id="pipeline">
+  <div class="sec-head reveal">
+    <span class="kicker">روش‌شناسی</span>
+    <h2>چرخه علمی پژوهش، <em>گام به گام</em></h2>
+    <p>سامانه پژوهشگر را در یک مسیر هفت‌گانه همراهی می‌کند؛ هر گام فقط پس از آماده‌شدن داده‌های لازم فعال می‌شود و هیچ گامی به‌صورت صوری پر نمی‌شود.</p>
+    <div class="orn">◆</div>
+  </div>
+  <div class="pipe">
+    <div class="step reveal"><span class="n">۱</span><h4>ساخت هندسه و داده</h4><p>ثبت پلان بناها، حیاط‌ها و بلوک‌ها به‌صورت چندضلعی واقعی؛ ارتفاع، طبقات، دوره ساخت، مصالح و کیفیت پوسته.</p><span class="lt">Geometry · Dataset</span></div>
+    <div class="step reveal d1"><span class="n">۲</span><h4>محاسبه شاخص‌های ریخت‌شناسی</h4><p>یازده شاخص مستقیماً از هندسه محاسبه می‌شوند — مساحت، محیط، دیوار مشترک و مجاورت از واقعیت پلان، نه ورودی دستی.</p><span class="lt">Morphological Indicators</span></div>
+    <div class="step reveal d2"><span class="n">۳</span><h4>کاوش داده (EDA)</h4><p>توزیع، پراکندگی و همبستگی متغیرها برای شناخت ساختار داده پیش از مدل‌سازی.</p><span class="lt">Exploratory Analysis</span></div>
+    <div class="step reveal d3"><span class="n">۴</span><h4>مدل‌سازی آماری</h4><p>رگرسیون OLS برای سنجش اثر شاخص‌ها بر تقاضای انرژی؛ خوشه‌بندی K-Means برای گونه‌شناسی ریختی بناها.</p><span class="lt">OLS · K-Means</span></div>
+    <div class="step reveal d4"><span class="n">۵</span><h4>اعتبارسنجی و مکانی</h4><p>سنجه‌های خطا (MAE، RMSE، R²، NMBE، CV(RMSE)) و آزمون خودهمبستگی فضایی موران برای تفسیر جغرافیایی نتایج.</p><span class="lt">Validation · Moran's I</span></div>
+    <div class="step reveal d5"><span class="n">۶</span><h4>شبیه‌سازی انرژی</h4><p>پس از پیکربندی موتور شبیه‌سازی، سناریوهای اجرا و صف نتایج فعال می‌شوند؛ تا آن لحظه، سامانه صادقانه «پیکربندی‌نشده» را اعلام می‌کند.</p><span class="lt">Simulation Engine</span></div>
+    <div class="step reveal d6"><span class="n">۷</span><h4>سناریو، تصمیم و استناد</h4><p>مقایسه مداخلات کم‌مداخله و تولید شکل نهایی با کپشن، منشأ و پارامترها — آماده درج در رساله.</p><span class="lt">Scenario · Citable Figure</span></div>
+  </div>
+</section>
+
+<!-- ═══════════════════ شاخص‌های ریخت‌شناسی ═══════════════════ -->
+<section id="indicators">
+  <div class="sec-head reveal">
+    <span class="kicker">کاتالوگ علمی</span>
+    <h2>یازده شاخص <em>ریخت‌شناسی</em> با فرمول صریح</h2>
+    <p>هر شاخص با تعریف، فرمول، واحد، مقیاس، داده لازم و محدودیت مستند شده است. شاخصی که داده یا موتور کافی ندارد، <b style="color:var(--gold)">هرگز صوری محاسبه نمی‌شود</b> و وضعیت آن اعلام می‌گردد.</p>
+    <div class="orn">◆</div>
+  </div>
+  <div class="grid inds">
+    <div class="card ind reveal"><div class="top"><h3>نسبت ارتفاع به عرض گذر</h3></div><span class="formula">H/W = H̄ / W̄</span><p>تعیین‌کننده اصلی بازتابش و پوشش آسمان در گذرها؛ از سازوکارهای کلیدی خرداقلیم بافت تاریخی.</p><div class="meta"><span class="badge">مقیاس: بلوک</span><span class="badge ok">محاسبه‌شده</span></div></div>
+    <div class="card ind reveal d1"><div class="top"><h3>جهت‌گیری بنا و گذر</h3></div><span class="formula">θ = arctan(ΔY/ΔX) · 180/π</span><p>زاویه راستای غالب نسبت به محور شرقی−غربی؛ کنترل‌کننده ورودی تابش خورشیدی و رفتار سایه.</p><div class="meta"><span class="badge">مقیاس: بنا</span><span class="badge ok">محاسبه‌شده</span></div></div>
+    <div class="card ind reveal d2"><div class="top"><h3>سطح اشغال و تراکم</h3></div><span class="formula">Coverage = ΣA_footprint / A_block</span><p>سنجش تراکم بافت و سهم فضای باز؛ پایه مقایسه بلوک‌ها از نظر فشردگی شهری.</p><div class="meta"><span class="badge">مقیاس: بلوک</span><span class="badge ok">محاسبه‌شده</span></div></div>
+    <div class="card ind reveal d3"><div class="top"><h3>نسبت پوسته به حجم</h3></div><span class="formula">S/V ≈ (P·H + A − A_shared) / (A·H)</span><p>هرچه کمتر، بنا فشرده‌تر و تعامل حرارتی پوسته با محیط کمتر — پیوند مستقیم با کارایی انرژی.</p><div class="meta"><span class="badge">مقیاس: بنا</span><span class="badge ok">محاسبه‌شده</span></div></div>
+    <div class="card ind reveal"><div class="top"><h3>فشردگی توده (گرِویل)</h3></div><span class="formula">C = 4πA / P²</span><p>سنجه پیچیدگی هندسی پلان؛ شکل‌های ساده و پیوسته مقدار نزدیک به ۱ می‌گیرند.</p><div class="meta"><span class="badge">مقیاس: بنا</span><span class="badge ok">محاسبه‌شده</span></div></div>
+    <div class="card ind reveal d1"><div class="top"><h3>سهم و تناسب حیاط مرکزی</h3></div><span class="formula">Share = A_cy / (A_fp + A_cy) · AR = L/W</span><p>الگوی بومی خنک‌سازی و نور: سهم سطح حیاط و نسبت اضلاع آن، رفتار تابش و تهویه را می‌سازد.</p><div class="meta"><span class="badge">مقیاس: بنا</span><span class="badge ok">محاسبه‌شده</span></div></div>
+    <div class="card ind reveal d2"><div class="top"><h3>نسبت بازشو به دیوار</h3></div><span class="formula">WWR = A_glazing / A_wall</span><p>کنترل‌کننده نفوذ تابش و بار سرمایشی/گرمایشی؛ در داده نمایشی صوری است و جایگزینی با برداشت میدانی الزامی است.</p><div class="meta"><span class="badge">مقیاس: بنا</span><span class="badge ok">محاسبه‌شده</span><span class="badge warn">نمایشی</span></div></div>
+    <div class="card ind reveal d3"><div class="top"><h3>ناهمگونی خط آسمان</h3></div><span class="formula">CV_H = σ_H / H̄</span><p>پراکندگی ارتفاع بناها در بلوک؛ بر آشفتگی جریان باد و الگوی سایه اثر می‌گذارد.</p><div class="meta"><span class="badge">مقیاس: بلوک</span><span class="badge ok">محاسبه‌شده</span></div></div>
+    <div class="card ind reveal"><div class="top"><h3>مجاورت و دیوارهای مشترک</h3></div><span class="formula">L_shared = Σ ℓ(edges)</span><p>طول دیوار مشترک از هندسه (با تلورانس)؛ دیوار مشترک، پوسته در معرض و اثر انباشت حرارتی میان‌بناها را می‌کاهد.</p><div class="meta"><span class="badge">مقیاس: بنا</span><span class="badge ok">محاسبه‌شده</span></div></div>
+    <div class="card ind reveal d1"><div class="top"><h3>سایه‌اندازی و دسترسی خورشیدی</h3></div><span class="formula">— نیازمند شبیه‌سازی تابشی —</span><p>ساعات سایه/تابش سطوح و حیاط‌ها؛ بدون موتور محاسبات تابش و داده اقلیمی (EPW) ارائه‌پذیر نیست — و ارائه هم نمی‌شود.</p><div class="meta"><span class="badge">مقیاس: محله</span><span class="badge sim">نیازمند شبیه‌سازی</span></div></div>
+    <div class="card ind reveal d2"><div class="top"><h3>پوشش گیاهی و نفوذپذیری</h3></div><span class="formula">Veg% · Perm%</span><p>سهم سبزینگی و سطوح نفوذپذیر بلوک؛ مؤثر بر دمای سطح و رواناب. در داده نمایشی صوری و نیازمند به‌روزرسانی هوایی.</p><div class="meta"><span class="badge">مقیاس: بلوک</span><span class="badge ok">محاسبه‌شده</span><span class="badge warn">نمایشی</span></div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════ پیوند ریخت‌شناسی و انرژی ═══════════════════ -->
+<section id="energy">
+  <div class="sec-head reveal">
+    <span class="kicker">هسته علمی رساله</span>
+    <h2>ریخت‌شناسی چگونه به <em>انرژی</em> پیوند می‌خورد؟</h2>
+    <p>هر متغیر ریخت‌شناسی یک سازوکار فیزیکی مشخص دارد که از مقیاس بنا تا محله عمل می‌کند؛ سامانه این سازوکارها را اندازه می‌گیرد، مدل می‌کند و به همبستگی آماری و فضایی مجهز می‌سازد.</p>
+    <div class="orn">◆</div>
+  </div>
+  <div class="energy-wrap">
+    <div class="chain">
+      <div class="link-card reveal"><span class="f">S/V ↓</span><div><b>پوسته کمتر، تبادل حرارتی کمتر</b><span>حجم فشرده با سطح دربرگیرنده کم، اتلاف گرما در زمستان و ورود گرمای زیاد در تابستان را می‌کاهد.</span></div></div>
+      <div class="link-card reveal d1"><span class="f">H/W ↑</span><div><b>سایه متقابل و خرداقلیم گذر</b><span>گذرهای عمیق بافت تاریخی در فصل گرم سایه‌بان طبیعی‌اند؛ همان نسبت در فصل سرد بازتابش کم آفتاب را نتیجه می‌دهد — سنجش این توازن هسته تحلیل است.</span></div></div>
+      <div class="link-card reveal d2"><span class="f">WWR</span><div><b>بازشو، دیال تابش و بار حرارتی</b><span>سهم شیشه در دیوار خارجی، ورود تابش و بار سرمایشی/گرمایشی را کنترل می‌کند؛ در معماری بومی با ارسی و تنظیم دقیق بازشوها، این تعادل چیده شده بود.</span></div></div>
+      <div class="link-card reveal d3"><span class="f">Courtyard</span><div><b>حیاط؛ موتور طبیعی نور و تهویه</b><span>حیاط مرکزی با ذخیره حرارتی شبانه‌روزی و تهویه شبی، الگوی بومی مقابله با اقلیم گرم و خشک شیراز است.</span></div></div>
+      <div class="link-card reveal d4"><span class="f">L_shared ↑</span><div><b>دیوار مشترک؛ سپر حرارتی میان‌بناها</b><span>چسبیدگی توده‌ها سطح بیرونی در معرض را کاهش می‌دهد — یکی از رمزهای کارایی بافت پیوسته تاریخی.</span></div></div>
+      <div class="link-card reveal d5"><span class="f">CV_H</span><div><b>خط آسمان؛ باد و سایه در مقیاس محله</b><span>ناهمگونی ارتفاع، الگوی سایه‌گیری کل بلوک و رفتار جریان باد شهری را شکل می‌دهد.</span></div></div>
+    </div>
+    <div class="energy-note reveal d2">
+      <h3>از سازوکار تا مدل آماری</h3>
+      <p>سامانه این سازوکارها را در سه حلقه تحلیلی به هم می‌بافد:</p>
+      <ul>
+        <li><b>مدل رگرسیونی:</b> تقاضای انرژی به‌مثابه تابعی از شاخص‌های ریخت‌شناسی با OLS حل‌بسته؛ گزارش ضرایب، انحراف معیار، R² و دامنه اعتبار — بدون هیچ ادعای فراتر از داده.</li>
+        <li><b>گونه‌شناسی ریختی:</b> خوشه‌بندی K-Means بناها بر پایه بردار شاخص‌ها؛ کشف «گونه‌های» ریختی بافت تاریخی و نگاشت آن‌ها روی نقشه و پراکندگی سه‌بعدی.</li>
+        <li><b>الگوی فضایی:</b> آزمون موران برای پاسخ به این پرسش که آیا تقاضای انرژی (یا خطای مدل) الگوی خوشه‌ای جغرافیایی دارد یا تصادفی پراکنده است.</li>
+      </ul>
+      <p style="margin-top:14px">شبیه‌سازی تفصیلی انرژی (موازنه حرارتی و مقیاس ساعتی) به موتور شبیه‌سازی واگذار شده است؛ تا زمانی که ادمین آن را پیکربندی نکند، سامانه به‌جای اعداد ساختگی، پیام صریح «پیکربندی‌نشده» را نشان می‌دهد. این <b>سوگند صداقت علمی</b> سامانه است: هیچ عددی بدون منشأ و برچسب، جایی نمی‌شود.</p>
+    </div>
+  </div>
+</section>
+<!-- ═══════════════════ صداقت علمی ═══════════════════ -->
+<section id="honesty">
+  <div class="sec-head reveal">
+    <span class="kicker">اصول حاکم</span>
+    <h2><em>صداقت علمی</em>؛ سنگ بنای سامانه</h2>
+    <p>در یک پژوهش دکتری، تمایز میان واقعیت و نمایش حیاتی است. سامانه با چهار قاعده سخت‌گیرانه از اعتبار علمی رساله محافظت می‌کند.</p>
+    <div class="orn">◆</div>
+  </div>
+  <div class="honest reveal">
+    <div class="h-grid">
+      <div class="h-card"><div class="q">◈ برچسب داده نمایشی</div><p>داده ۵۱ بنا و ۳ بلوک، مجموعه‌ای <b>مصنوعی و سازگار</b> برای نمایش کامل مسیر تحلیل است و همیشه با برچسب «داده نمایشی ـ فاقد اعتبار برای استناد علمی» همراه است. جایگزینی با برداشت میدانی در طراحی سامانه پیش‌بینی شده است.</p></div>
+      <div class="h-card"><div class="q">◈ موتور پیکربندی‌نشده = نتیجه‌ای نیست</div><p>تا زمانی که موتور شبیه‌سازی تنظیم نشود، ماژول شبیه‌سازی فقط پیام <code>«اتصال موتور شبیه‌سازی هنوز پیکربندی نشده است.»</code> نشان می‌دهد — بدون حدس، بدون عدد قلابی.</p></div>
+      <div class="h-card"><div class="q">◈ شاخص بدون داده محاسبه نمی‌شود</div><p>شاخص دسترسی خورشیدی تا فعال‌شدن موتور تابش، صوری تولید نمی‌شود و وضعیتش «نیازمند شبیه‌سازی» اعلام می‌گردد؛ مقادیر صوریِ موجود (WWR، پوشش گیاهی) هم صریحاً برچسب می‌خورند.</p></div>
+      <div class="h-card"><div class="q">◈ شکل با منشأ و کپشن</div><p>هر نمودارِ خروجی کپشن فارسی، منشأ داده و پارامترهای تحلیل را ثبت می‌کند تا درج آن در رساله، همراه با استناد شفاف و بازتولیدپذیر باشد.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ تم‌ها ═══════════════════ -->
+<section id="themes">
+  <div class="sec-head reveal">
+    <span class="kicker">شخصی‌سازی بصری</span>
+    <h2>ده تم <em>گرافیکی</em> در دو حالت روشن و تیره</h2>
+    <p>از پالت میراثی لاجورد و فیروزه تا شفق نئونی؛ ادمین در زمان اجرا تم سراسری را تعیین می‌کند و تغییر در پایگاه سامانه ثبت و در رویدادهای ممیزی نگه‌داری می‌شود.</p>
+    <div class="orn">◆</div>
+  </div>
+  <div class="themes reveal">
+    <div class="theme-chip"><span class="sw"><i style="background:#143954"></i><i style="background:#17877d"></i><i style="background:#b4693b"></i></span><span>شیراز کلاسیک</span></div>
+    <div class="theme-chip"><span class="sw"><i style="background:#084d48"></i><i style="background:#12a094"></i><i style="background:#ffd88a"></i></span><span>فیروزه‌ای</span></div>
+    <div class="theme-chip"><span class="sw"><i style="background:#0c2747"></i><i style="background:#3d84c6"></i><i style="background:#7cb8ec"></i></span><span>آبی تیره</span></div>
+    <div class="theme-chip"><span class="sw"><i style="background:#6d5cf0"></i><i style="background:#22c8d6"></i><i style="background:#f06292"></i></span><span>شیشه‌ای مدرن</span></div>
+    <div class="theme-chip"><span class="sw"><i style="background:#3d2a10"></i><i style="background:#cf9a2e"></i><i style="background:#f2c14e"></i></span><span>زعفرانی</span></div>
+    <div class="theme-chip"><span class="sw"><i style="background:#0b3b26"></i><i style="background:#27a56a"></i><i style="background:#f2c063"></i></span><span>زمردی</span></div>
+    <div class="theme-chip"><span class="sw"><i style="background:#4a1024"></i><i style="background:#e0557a"></i><i style="background:#ffd88a"></i></span><span>گل سرخ شیراز</span></div>
+    <div class="theme-chip"><span class="sw"><i style="background:#2a1a52"></i><i style="background:#7c5cff"></i><i style="background:#ffd76b"></i></span><span>بنفش سلطنتی</span></div>
+    <div class="theme-chip"><span class="sw"><i style="background:#4a2414"></i><i style="background:#f07d3f"></i><i style="background:#ffd166"></i></span><span>غروب کویر</span></div>
+    <div class="theme-chip"><span class="sw"><i style="background:#062e2c"></i><i style="background:#16c4a8"></i><i style="background:#7dffd4"></i></span><span>شفق نورانی</span></div>
+  </div>
+</section>
+
+<!-- ═══════════════════ استقرار ═══════════════════ -->
+<section id="deploy">
+  <div class="sec-head reveal">
+    <span class="kicker">اجرا و انتشار</span>
+    <h2>از <em>یک فایل BAT</em> تا مخزن عمومی گیت‌هاب</h2>
+    <p>سامانه طوری بسته‌بندی شده که روی لپ‌تاپی بدون پایتون، پای‌چارم و حتی اینترنت، با یک دوبار-کلیک بالا بیاید.</p>
+    <div class="orn">◆</div>
+  </div>
+  <div class="grid dep">
+    <div class="card reveal"><div class="ico i-gold"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M7 9l3 3-3 3M12 15h5"/></svg></div><h3>اجرای تک‌کلیکی ویندوز</h3><p>لانچر همراه ران‌تایم اختصاصی Node.js؛ مسیر دیتابیس به‌صورت خودکار نسبی ساخته می‌شود و مرورگر خودکار باز می‌گردد.</p><span class="path">portable\START-WINDOWS.bat</span></div>
+    <div class="card reveal d1"><div class="ico i-lapis"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M7.5 7.5 10.5 16M16.5 7.5 13.5 16M8.5 6h7"/></svg></div><h3>مخزن عمومی گیت‌هاب</h3><p>کل مخزن شامل نسخه اجرایی، سورس کامل و ران‌تایم؛ کلون کنید و اجرا کنید. انتشار نسخه‌دار با تگ و Release.</p><span class="path">github.com/hjalilvand2004-coder/dr.eskandarieh_memari</span></div>
+    <div class="card reveal d2"><div class="ico i-turq"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></svg></div><h3>داده کاملاً محلی</h3><p>پایگاه SQLite جاسازی‌شده در کنار اپلیکیشن؛ بدون سرور خارجی، بدون کلود. پشتیبان‌گیری فقط کپی یک فایل است.</p><span class="path">app\db\custom.db</span></div>
+  </div>
+</section>
+</main>
+
+<!-- ═══════════════════ پانویس ═══════════════════ -->
+<footer>
+  <div class="stars-line">✦ ✦ ✦</div>
+  <div class="att">دکتر سارا اسکندریه — شرکت ماه افزارهوشمندرسا MahAI.ir</div>
+  <p>محیط پژوهشی رساله دکتری معماری «تبیین الگوهای ریخت‌شناسی در بافت تاریخی با تأکید بر کارایی انرژی» • نسخه ۱٫۲٫۰</p>
+  <p style="margin-top:4px">همه داده‌های نمایشی صرفاً برای نمایش چرخه تحلیل‌اند و فاقد اعتبار استنادی هستند.</p>
+</footer>
+<button id="toTop" aria-label="بازگشت به بالا">↑</button>
+
+<script>
+/* ═══════════ ستاره‌های قهرمان ═══════════ */
+(function(){
+  const cv=document.getElementById('stars'),ctx=cv.getContext('2d');
+  let W,H,stars=[],raf,par={x:0,y:0};
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function size(){W=cv.width=cv.offsetWidth*devicePixelRatio;H=cv.height=cv.offsetHeight*devicePixelRatio;
+    stars=Array.from({length:Math.min(130,W/12)},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.6*devicePixelRatio+.3,a:Math.random(),s:Math.random()*.02+.004,vx:(Math.random()-.5)*.12*devicePixelRatio}))}
+  function draw(){ctx.clearRect(0,0,W,H);
+    for(const st of stars){st.a+=st.s;if(st.a>1||st.a<.12)st.s*=-1;st.x+=st.vx;
+      if(st.x<0)st.x=W;if(st.x>W)st.x=0;
+      const tw=.5+.5*Math.sin(st.a*6.28);
+      ctx.beginPath();ctx.arc(st.x,st.y,st.r,0,6.28);
+      ctx.fillStyle=`rgba(${st.x>W*.5?'255,215,107':'166,229,222'},${.14+tw*.5})`;ctx.fill()}}
+  function loop(){draw();raf=requestAnimationFrame(loop)}
+  size();addEventListener('resize',size);
+  if(!reduce){loop()}else{draw()}
+  addEventListener('mousemove',e=>{par.x=(e.clientX/innerWidth-.5);par.y=(e.clientY/innerHeight-.5);
+    cv.style.transform=`translate(${par.x*-14}px,${par.y*-10}px)`},{passive:true});
+})();
+
+/* ═══════════ ظهور هنگام اسکرول ═══════════ */
+(function(){
+  const all=document.querySelectorAll('.reveal');
+  /* جاروب ایمنی: هر عنصری که بالای نما یا درون نماست حتماً ظاهر شود (پرش با End/لینک) */
+  function sweep(){
+    const lim=window.scrollY+window.innerHeight+60;
+    all.forEach(el=>{
+      if(!el.classList.contains('in')&&el.getBoundingClientRect().top+window.scrollY<lim)el.classList.add('in');
+    });
+  }
+  try{
+    const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+    all.forEach(el=>io.observe(el));
+  }catch(err){
+    /* مرورگر قدیمی بدون IntersectionObserver — همه محتوا نمایان */
+    all.forEach(el=>el.classList.add('in'));
+  }
+  addEventListener('scroll',sweep,{passive:true});
+  addEventListener('load',sweep);
+})();
+
+/* ═══════════ شمارنده‌های فارسی ═══════════ */
+(function(){
+  const fa=n=>String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+  const io=new IntersectionObserver(es=>es.forEach(e=>{
+    if(!e.isIntersecting)return;io.unobserve(e.target);
+    const el=e.target,to=+el.dataset.to,suf=el.dataset.suffix||'',t0=performance.now(),D=1600;
+    (function tick(t){const p=Math.min(1,(t-t0)/D),ease=1-Math.pow(1-p,3);
+      el.textContent=fa(Math.round(to*ease))+suf;
+      if(p<1)requestAnimationFrame(tick)})(t0);
+  }),{threshold:.5});
+  document.querySelectorAll('.count b').forEach(el=>io.observe(el));
+})();
+
+/* ═══════════ تیلت سه‌بعدی کارت‌ها ═══════════ */
+(function(){
+  if(matchMedia('(hover:none)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  document.querySelectorAll('.tilt').forEach(c=>{
+    c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect(),
+      x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+      c.style.transform=`perspective(900px) rotateX(${(-y*4.5).toFixed(2)}deg) rotateY(${(x*4.5).toFixed(2)}deg) translateY(-6px)`});
+    c.addEventListener('mouseleave',()=>{c.style.transform=''});
+  });
+})();
+
+/* ═══════════ نوار پیشرفت + دکمه بازگشت ═══════════ */
+(function(){
+  const bar=document.getElementById('progress'),top=document.getElementById('toTop');
+  addEventListener('scroll',()=>{
+    const h=document.documentElement,sc=h.scrollTop,mx=h.scrollHeight-h.clientHeight;
+    bar.style.width=(mx?sc/mx*100:0)+'%';
+    top.classList.toggle('show',sc>700);
+  },{passive:true});
+  top.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+})();
+</script>
+</body>
+</html>

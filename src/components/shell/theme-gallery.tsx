@@ -48,7 +48,7 @@ export function ThemeGallery() {
             : "پیش‌نمایش تم در همین مرورگر اعمال می‌شود؛ تغییر دائمی سامانه در اختیار مدیر است."}
         </p>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid max-h-[58vh] grid-cols-2 gap-2 overflow-y-auto pl-0.5">
           {SKINS.map((s) => {
             const isActive = s.id === skin;
             return (

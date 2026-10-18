@@ -1,6 +1,6 @@
 @echo off
 setlocal enableextensions
-title Shiraz Smart Atlas v1.1.0 - Morphology and Energy
+title Shiraz Smart Atlas v1.2.0 - Morphology and Energy
 
 rem ============================================================
 rem  Shiraz Smart Atlas | One-click portable launcher (Windows)
@@ -24,7 +24,7 @@ if not exist "%NODE_EXE%" (
 )
 
 echo ============================================================
-echo   Shiraz Smart Atlas v1.1.0
+echo   Shiraz Smart Atlas v1.2.0
 echo   URL   : http://localhost:%PORT%
 echo   Data  : app\db\custom.db  (SQLite)
 echo.

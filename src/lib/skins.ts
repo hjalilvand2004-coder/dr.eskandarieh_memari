@@ -5,9 +5,30 @@
  * - ادمین می‌تواند تم سراسری را در زمان اجرا تغییر دهد (ذخیره در SystemSetting)
  */
 
-export type SkinId = "shiraz" | "turquoise" | "midnight" | "glass" | "saffron" | "emerald";
+export type SkinId =
+  | "shiraz"
+  | "turquoise"
+  | "midnight"
+  | "glass"
+  | "saffron"
+  | "emerald"
+  | "rose"
+  | "royal"
+  | "sunset"
+  | "aurora";
 
-export const SKIN_IDS: SkinId[] = ["shiraz", "turquoise", "midnight", "glass", "saffron", "emerald"];
+export const SKIN_IDS: SkinId[] = [
+  "shiraz",
+  "turquoise",
+  "midnight",
+  "glass",
+  "saffron",
+  "emerald",
+  "rose",
+  "royal",
+  "sunset",
+  "aurora",
+];
 
 export interface SkinMeta {
   id: SkinId;
@@ -56,6 +77,30 @@ export const SKINS: SkinMeta[] = [
     name: "زمردی",
     desc: "سبز زمردی آرام و خوانا",
     swatch: ["#0b3b26", "#27a56a", "#f2c063"],
+  },
+  {
+    id: "rose",
+    name: "گل سرخ شیراز",
+    desc: "سرخ گلاب و طلایی گرم — شهر گل و شعر",
+    swatch: ["#4a1024", "#e0557a", "#ffd88a"],
+  },
+  {
+    id: "royal",
+    name: "بنفش سلطنتی",
+    desc: "بنفش درخشان با طلایی سلطنتی",
+    swatch: ["#2a1a52", "#7c5cff", "#ffd76b"],
+  },
+  {
+    id: "sunset",
+    name: "غروب کویر",
+    desc: "نارنجی گرم و مسی آفتاب غروب",
+    swatch: ["#4a2414", "#f07d3f", "#ffd166"],
+  },
+  {
+    id: "aurora",
+    name: "شفق نورانی",
+    desc: "فیروزه‌ای نئونی و نعنایی درخشان",
+    swatch: ["#062e2c", "#16c4a8", "#7dffd4"],
   },
 ];
 

@@ -65,3 +65,6 @@ server.log
 /.zscripts/
 /.env
 /Caddyfile
+
+# internal tool artifacts
+tool-results/

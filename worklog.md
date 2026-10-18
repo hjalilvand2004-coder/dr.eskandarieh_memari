@@ -141,3 +141,21 @@ Work Log:
 
 Stage Summary:
 - همه‌چیز برای push یک‌فرمانی آماده است؛ منتظر Personal Access Token (دسترسی repo) از کاربر برای اجرای push origin main --tags
+
+---
+Task ID: 8
+Agent: main (Z.ai)
+Task: پوش نسخه v1.1.0 به گیت‌هاب با توکن کاربر + Release با فایل‌های زیپ
+
+Work Log:
+- پوش اولیه رد شد: download/Shiraz-Atlas-v1.0.0-Portable.zip (191MB) در تاریخچه بود و از سقف ۱۰۰MB گیت‌هاب بزرگ‌تر
+- اسکن تاریخچه: فقط همین یک blob بزرگ؛ حذف از تاریخچه با git-filter-repo (نصب در ~/.local، اجرا با مسیر کامل) → ۰ blob بزرگ، کامیت‌ها بازنویسی شدند، تگ‌ها بازنویسی و سالم
+- ریموت توسط filter-repo حذف شده بود → دوباره add شد؛ پوش دوم موفق: main + تگ v1.0.0 + تگ v1.1.0
+- راستی‌آزمایی با git ls-remote: refs/heads/main = ecfc569 و دو تگ روی گیت‌هاب
+- ساخت GitHub Release v1.1.0 (id=416253136) با توضیحات فارسی + آپلود ۴ دارایی: Portable (191MB)، Windows (116MB)، Source (646KB)، SHA256SUMS — همه state=uploaded
+- نکته: در میانه کار محدودیت نرخ API بدون توکن (۶۰/ساعت) خورد؛ با هدر Authorization حل شد
+
+Stage Summary:
+- مخزن: github.com/hjalilvand2004-coder/dr.eskandarieh_memari (main + ۲ تگ + README فارسی)
+- Release: .../releases/tag/v1.1.0 با لینک دائمی دانلود هر ۴ فایل — مشکل تکراری «دریافت نشدن زیپ» دیگر برطرف است
+- تاریخچه گیت اکنون کاملاً تمیز از فایل‌های حجیم است

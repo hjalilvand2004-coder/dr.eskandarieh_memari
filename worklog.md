@@ -266,3 +266,21 @@ Work Log:
 
 Stage Summary:
 - فایل تشریحی اکنون در مخزن عمومی است: docs/Shiraz-Atlas-System-Overview.html + لینک از README
+
+---
+Task ID: 15
+Agent: main (Z.ai)
+Task: رفع خطای کاربر «بارگذاری نشد / اتصال برقرار نشد» + پوش نسخه جدید v1.2.1
+
+Work Log:
+- علت‌یابی: سورس سالم بود (تست زنده لینوکس ۱۰/۱۰ سبز) → مشکل محیطی ویندوز: (۱) DATABASE_URL ساخته‌شده در BAT با مسیر دارای فاصله/فارسی/OneDrive خراب می‌شد، (۲) پورت ۳۰۰۰ ثابت با خطر تداخل نمونه زامبی
+- کشف با تست عملی: Prisma مسیر خام UTF-8 (file:/tmp/شیراز اطلس ...) را باز می‌کند ولی URLهای percent-encoded را باز نمی‌کند (SQLite code 14)
+- ساخت portable/app/server.cjs: سه استراتژی URL ساخته و با SELECT 1 واقعی آزموده، اولین سالم انتخاب؛ انتخاب خودکار اولین پورت آزاد ۳۰۰۰-۳۰۲۰ (باگ resolve(probe())→undefined رفع شد)؛ نوشتن port.txt؛ خطاهای دوزبانه شفاف
+- بازنویسی START-WINDOWS.bat (CRLF) + شروع-سامانه.bat: بررسی پیش‌نیازها، پاک‌سازی port.txt قبلی، مرورگر از روی port.txt؛ START-MAC-LINUX.sh همگام
+- اپ: بوت‌استرپ ۳ تلاش خودکار + پیام راهنما (app-shell)؛ داشبورد با دلیل خطا + دکمه تلاش دوباره (dashboard-view)؛ لینت و تایپ‌چک صفر خطا
+- بیلد پروداکشن جدید + سینک کامل portable/app (DB و worker و static سالم)
+- تست‌ها: مسیر عادی ۲۰۰، تداخل پورت → ۳۰۰۲ خودکار، مسیر خصمانه «شیراز اطلس نسخه ۱.۲.۱» → همه ۹ بررسی سبز (bootstrap/atlas/OLS/kmeans/validation/settings/datasets/root/worker)
+- نسخه‌بندی 1.2.1: package.json، VERSION.txt، CHANGELOG.md، README.md (بخش جدید)، README-فارسی.txt (راهنمای رفع اشکال)، .gitignore += port.txt
+
+Stage Summary:
+- ریشه مشکل کاربر با دو لایه دفاعی حل شد (URL استراتژیک + پورت خودکار)؛ سناریوی دقیق کاربر در لینوکس شبیه‌سازی و سبز شد؛ آماده پوش + Release v1.2.1

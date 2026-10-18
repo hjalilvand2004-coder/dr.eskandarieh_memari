@@ -9,7 +9,7 @@ import { SectionHeader, StatCard, ValidationStatusBadge, fa, EmptyState } from "
 import { useAppStore } from "@/lib/store";
 import {
   LayoutDashboard, Database, BrainCircuit, ShieldCheck, BookOpen, ArrowLeft,
-  Building2, Layers, FlaskConical, Target,
+  Building2, Layers, FlaskConical, Target, RefreshCw,
 } from "lucide-react";
 
 interface BootstrapData {
@@ -36,16 +36,48 @@ export function DashboardView() {
   const setModule = useAppStore((s) => s.setModule);
   const [data, setData] = React.useState<BootstrapData | null>(null);
   const [loading, setLoading] = React.useState(true);
+  const [errMsg, setErrMsg] = React.useState<string | null>(null);
+  const [reloadKey, setReloadKey] = React.useState(0);
 
   React.useEffect(() => {
+    let alive = true;
+    setLoading(true);
+    setErrMsg(null);
     fetch("/api/bootstrap")
       .then((r) => r.json())
-      .then((j) => j.ok && setData(j.data))
-      .finally(() => setLoading(false));
-  }, []);
+      .then((j) => {
+        if (!alive) return;
+        if (j.ok) setData(j.data);
+        else setErrMsg(j?.error ?? "خطای ناشناخته سرور");
+      })
+      .catch((e) => {
+        if (!alive) return;
+        setErrMsg(e?.message ?? "اتصال به سرور برقرار نشد");
+      })
+      .finally(() => {
+        if (alive) setLoading(false);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [reloadKey]);
 
   if (loading) return <EmptyState title="در حال بارگذاری داشبورد…" />;
-  if (!data) return <EmptyState title="بارگذاری نشد" hint="اتصال به سرور را بررسی کنید." />;
+  if (!data)
+    return (
+      <div className="space-y-4">
+        <EmptyState
+          title="بارگذاری نشد"
+          hint={`دریافت داده داشبورد ناموفق بود — ${errMsg ?? "دلیل نامشخص"}. اگر سرور تازه اجرا شده، چند ثانیه صبر کنید؛ در غیر این صورت پنجره سرور را بررسی کنید.`}
+        />
+        <div className="flex justify-center">
+          <Button variant="outline" size="sm" onClick={() => setReloadKey((k) => k + 1)}>
+            <RefreshCw className="h-3.5 w-3.5 ml-1" aria-hidden />
+            تلاش دوباره
+          </Button>
+        </div>
+      </div>
+    );
 
   const st = data.stats ?? { entityCount: 0, indicatorCount: 0, mlCount: 0, validationCount: 0 };
 

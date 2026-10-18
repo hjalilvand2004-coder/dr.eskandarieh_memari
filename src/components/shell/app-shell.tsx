@@ -47,19 +47,44 @@ export function AppShell() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [booting, setBooting] = React.useState(true);
 
-  // بوت‌استرپ: seed و اطمینان از آماده بودن پایگاه
+  // بوت‌استرپ: seed و اطمینان از آماده بودن پایگاه — با ۳ تلاش خودکار
+  // (سرور تازه اجراشده ممکن است هنوز در حال آماده‌سازی باشد)
   React.useEffect(() => {
-    fetch("/api/bootstrap")
-      .then((r) => r.json())
-      .then((j) => {
-        if (j.ok) {
-          useAppStore.getState().setLastSavedAt(new Date().toLocaleTimeString("fa-IR"));
-        } else {
-          toast({ title: "خطا در بوت‌استرپ سامانه", description: j.error, variant: "destructive" });
-        }
-      })
-      .catch(() => toast({ title: "اتصال برقرار نشد", variant: "destructive" }))
-      .finally(() => setBooting(false));
+    let alive = true;
+    const attempt = (n: number) => {
+      fetch("/api/bootstrap")
+        .then((r) => r.json())
+        .then((j) => {
+          if (!alive) return;
+          if (j.ok) {
+            useAppStore.getState().setLastSavedAt(new Date().toLocaleTimeString("fa-IR"));
+            setBooting(false);
+          } else if (n < 2) {
+            window.setTimeout(() => attempt(n + 1), 1500);
+          } else {
+            setBooting(false);
+            toast({ title: "خطا در بوت‌استرپ سامانه", description: j.error, variant: "destructive" });
+          }
+        })
+        .catch(() => {
+          if (!alive) return;
+          if (n < 2) {
+            window.setTimeout(() => attempt(n + 1), 1500);
+            return;
+          }
+          setBooting(false);
+          toast({
+            title: "اتصال برقرار نشد",
+            description:
+              "سرور در حال آماده‌سازی است؛ چند ثانیه صبر و صفحه را تازه‌سازی کنید. اگر تکرار شد، پنجره سیاه سرور را باز کرده و پیام خطا را بررسی کنید.",
+            variant: "destructive",
+          });
+        });
+    };
+    attempt(0);
+    return () => {
+      alive = false;
+    };
   }, []);
 
   React.useEffect(() => {

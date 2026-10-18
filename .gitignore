@@ -68,3 +68,4 @@ server.log
 
 # internal tool artifacts
 tool-results/
+portable/app/port.txt

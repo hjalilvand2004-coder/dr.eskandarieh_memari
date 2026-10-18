@@ -9,10 +9,11 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SectionHeader, EmptyState, fa, DemoBadge } from "@/components/shared/ui-bits";
 import { EChart, useBaseOption } from "@/components/charts/echart";
+import { Scatter3D, type Scatter3DHandle } from "@/components/charts/scatter3d";
 import * as echarts from "echarts";
 import { useTheme } from "next-themes";
 import { toast } from "@/hooks/use-toast";
-import { LineChart, Download, FileImage, FileCode2, FileDown, History, Loader2 } from "lucide-react";
+import { LineChart, Download, FileImage, FileCode2, FileDown, History, Loader2, Boxes } from "lucide-react";
 
 interface Building {
   code: string; block: string; indicators: { footprintM2: number; svRatio: number; heightM: number; wwrPct: number; compactness: number }; energy?: { totalKwhM2a: number; coolingKwhM2a: number; heatingKwhM2a: number };
@@ -20,11 +21,12 @@ interface Building {
 interface Block { code: string; name: string; hwRatio: number; coverage: number; skylineCv: number; vegetationFraction: number }
 interface Calibration { period: string; measuredKwh: number; simulatedKwh: number }
 
-type ChartKind = "scatter" | "box" | "blocks" | "timeline" | "sv_energy";
+type ChartKind = "scatter" | "box" | "blocks" | "timeline" | "sv_energy" | "scatter3d";
 
 const CHART_KINDS: Array<{ key: ChartKind; label: string }> = [
   { key: "scatter", label: "پراکندگی سطح ↔ تقاضا" },
   { key: "sv_energy", label: "پراکندگی S/V ↔ تقاضا" },
+  { key: "scatter3d", label: "پراکندگی سه‌بعدی: سطح × ارتفاع × تقاضا" },
   { key: "box", label: "جعبه‌ای تقاضا بر پایه بلوک" },
   { key: "blocks", label: "میله‌ای شاخص‌های بلوکی" },
   { key: "timeline", label: "سری زمانی کالیبراسیون (نمایشی)" },
@@ -46,9 +48,12 @@ export function ChartsView() {
   const [spec, setSpec] = React.useState<ChartSpec>({ kind: "scatter", title: "رابطه سطح اشغال و تقاضای انرژی ویژه بناهای نمونه", caption: "توزیع بناهای نمونه نمایشی برحسب سطح اشغال و تقاضای انرژی ویژه. رنگ: بلوک.", figureNo: "شکل ۱" });
   const [loading, setLoading] = React.useState(true);
   const chartRef = React.useRef<echarts.ECharts | null>(null);
+  const scatter3dRef = React.useRef<Scatter3DHandle | null>(null);
   const base = useBaseOption();
   const { theme } = useTheme();
   const isDark = theme === "dark";
+  const cssVar = (name: string, fallback: string) =>
+    typeof window !== "undefined" ? getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback : fallback;
 
   React.useEffect(() => {
     Promise.all([
@@ -145,6 +150,12 @@ export function ChartsView() {
       );
       return [header, ...rows].join("\n");
     }
+    if (kind === "scatter3d") {
+      const rows = atlas.buildings.filter((b) => b.energy).map((b) =>
+        [b.code, b.block, Math.round(b.indicators.footprintM2), b.indicators.heightM, b.energy!.totalKwhM2a].join(",")
+      );
+      return ["code,block,footprintM2,heightM,totalKwhM2a", ...rows].join("\n");
+    }
     if (kind === "box" || kind === "blocks") {
       const rows = atlas.blocks.map((b) => `${b.code},${b.hwRatio.toFixed(2)},${(b.coverage * 100).toFixed(1)},${(b.vegetationFraction * 100).toFixed(1)}`);
       return ["block,hwRatio,coveragePct,vegetationPct", ...rows].join("\n");
@@ -155,6 +166,19 @@ export function ChartsView() {
     return "";
   };
   const dataBehindCsv = makeCsv();
+
+  // نقاط سه‌بعدی استودیو: سطح × ارتفاع × تقاضا به رنگ بلوک
+  const scatter3dPoints = atlas
+    ? atlas.buildings
+        .filter((b) => b.energy)
+        .map((b) => ({
+          x: Math.round(b.indicators.footprintM2),
+          y: b.energy!.totalKwhM2a,
+          z: b.indicators.heightM,
+          color: blockColors[Math.max(0, atlas.blocks.findIndex((bl) => bl.code === b.block)) % blockColors.length],
+          code: b.code,
+        }))
+    : [];
 
   const downloadFile = (content: string, filename: string, type: string) => {
     const blob = new Blob(["\uFEFF" + content], { type });
@@ -184,7 +208,12 @@ export function ChartsView() {
                 {spec.title || "شکل بدون عنوان"}
               </span>
               <div className="flex items-center gap-1.5 no-print">
-                <Select value={spec.kind} onValueChange={(v) => setSpec({ ...spec, kind: v as ChartKind })}>
+                <Select value={spec.kind} onValueChange={(v) => {
+                  const k = v as ChartKind;
+                  if (k === "scatter3d" && spec.kind !== "scatter3d") {
+                    setSpec({ ...spec, kind: k, title: "رابطه سه‌بعدی سطح، ارتفاع و تقاضای انرژی بناهای نمونه", caption: "پراکندگی سه‌بعدی بناهای نمونه نمایشی در فضای سطح اشغال، ارتفاع و تقاضای انرژی ویژه؛ رنگ: بلوک. محورها مقیاس یکسان ندارند و نمایش اکتشافی است." });
+                  } else setSpec({ ...spec, kind: k });
+                }}>
                   <SelectTrigger className="w-52 h-8 text-xs"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {CHART_KINDS.map((k) => <SelectItem key={k.key} value={k.key}>{k.label}</SelectItem>)}
@@ -194,11 +223,26 @@ export function ChartsView() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-3">
-            <EChart option={option} height={400} onReady={(c) => (chartRef.current = c)} />
+            {kind === "scatter3d" ? (
+              <Scatter3D
+                points={scatter3dPoints}
+                axes={{ x: "سطح اشغال (m²)", y: "تقاضای کل (kWh/m²·a)", z: "ارتفاع (m)" }}
+                height={400}
+                bg={cssVar("--card", isDark ? "#142838" : "#fffdf8")}
+                gridColor={cssVar("--border", isDark ? "#24425a" : "#e8e2d2")}
+                labelColor={cssVar("--muted-foreground", isDark ? "#9db0be" : "#5d6b77")}
+                onReady={(h) => (scatter3dRef.current = h)}
+                ariaLabel="پراکندگی سه‌بعدی سطح، ارتفاع و تقاضای انرژی بناهای نمونه"
+              />
+            ) : (
+              <EChart option={option} height={400} onReady={(c) => (chartRef.current = c)} />
+            )}
             <div className="flex flex-wrap gap-2 mt-3 no-print">
               <Button size="sm" variant="outline" className="gap-1.5" onClick={() => {
-                if (!chartRef.current) return;
-                const url = chartRef.current.getDataURL({ type: "png", pixelRatio: 3, backgroundColor: "#ffffff" });
+                let url: string | null = null;
+                if (kind === "scatter3d") url = scatter3dRef.current?.toDataURL(3) ?? null;
+                else if (chartRef.current) url = chartRef.current.getDataURL({ type: "png", pixelRatio: 3, backgroundColor: "#ffffff" });
+                if (!url) return;
                 const a = document.createElement("a");
                 a.href = url;
                 a.download = `${spec.figureNo.replace(/\s/g, "-")}.png`;
@@ -208,6 +252,10 @@ export function ChartsView() {
                 <FileImage className="h-3.5 w-3.5" /> خروجی PNG (چاپ)
               </Button>
               <Button size="sm" variant="outline" className="gap-1.5" onClick={() => {
+                if (kind === "scatter3d") {
+                  toast({ title: "خروجی SVG برای نمودار سه‌بعدی پشتیبانی نمی‌شود", description: "از خروجی PNG چاپی استفاده کنید.", variant: "destructive" });
+                  return;
+                }
                 if (!chartRef.current) return;
                 const svg = chartRef.current.renderToSVGString({ backgroundColor: "#ffffff" });
                 downloadFile(svg, `${spec.figureNo.replace(/\s/g, "-")}.svg`, "image/svg+xml");
@@ -249,7 +297,7 @@ export function ChartsView() {
             </CardHeader>
             <CardContent className="text-[11px] space-y-2 leading-5">
               <p><b>منبع داده:</b> {spec.kind === "timeline" ? "مجموعه «سری کالیبراسیون (نمایشی)»" : "موجودیت‌های فضایی + داده انرژی نمایشی"}</p>
-              <p><b>روش تولید:</b> {spec.kind === "scatter" || spec.kind === "sv_energy" ? "پراکندگی دوبعدی بر داده بناهای نمایشی" : spec.kind === "box" ? "جعبه‌ای (پنج‌عددی) بر داده بلوک‌ها" : spec.kind === "blocks" ? "میله‌ای گروهی شاخص‌های بلوکی محاسبه‌شده از هندسه" : "سری زمانی مقایسه‌ای دو سری معادل"}</p>
+              <p><b>روش تولید:</b> {spec.kind === "scatter3d" ? "پراکندگی سه‌بعدی WebGL (Three.js) از سه متغیر با محورهای برچسب‌دار؛ رنگ: بلوک" : spec.kind === "scatter" || spec.kind === "sv_energy" ? "پراکندگی دوبعدی بر داده بناهای نمایشی" : spec.kind === "box" ? "جعبه‌ای (پنج‌عددی) بر داده بلوک‌ها" : spec.kind === "blocks" ? "میله‌ای گروهی شاخص‌های بلوکی محاسبه‌شده از هندسه" : "سری زمانی مقایسه‌ای دو سری معادل"}</p>
               <p><b>تاریخ تولید:</b> {DATE}</p>
               <p><b>نسخه تحلیل:</b> {VERSION}</p>
               <p><b>پالت:</b> سازگار با اختلال دید رنگ (Okabe/Viridis) • فونت: Vazirmatn</p>

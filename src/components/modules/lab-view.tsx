@@ -11,8 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { SectionHeader, EmptyState, fa, DemoBadge, LoadingSkeleton } from "@/components/shared/ui-bits";
 import { EChart, useBaseOption } from "@/components/charts/echart";
+import { Scatter3D, type Scatter3DHandle } from "@/components/charts/scatter3d";
+import { useTheme } from "next-themes";
 import { toast } from "@/hooks/use-toast";
-import { BrainCircuit, Loader2, Play, Info, Sigma, GitBranch, BarChart3 } from "lucide-react";
+import { BrainCircuit, Loader2, Play, Info, Sigma, GitBranch, BarChart3, Boxes, Image as ImageIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface EdaResult {
@@ -29,6 +31,7 @@ interface KMeansResult {
   profiles: Array<{ cluster: number; size: number; featureMeans: Array<{ key: string; label: string; value: number }>; meanTotal: number; meanCooling: number; meanHeating: number; codes: string[] }>;
   labels: number[];
   points: Array<{ x: number; y: number; label: number; code: string }>;
+  scatter3d?: Array<{ code: string; a: number; b: number; c: number; label: number }>;
 }
 
 interface RegResult {
@@ -204,7 +207,13 @@ function KMeansTab() {
   const [seed, setSeed] = React.useState("42");
   const [res, setRes] = React.useState<KMeansResult | null>(null);
   const [loading, setLoading] = React.useState(false);
+  const [view3d, setView3d] = React.useState(false);
+  const scatter3dRef = React.useRef<Scatter3DHandle | null>(null);
   const base = useBaseOption();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+  const v = (name: string, fallback: string) =>
+    typeof window !== "undefined" ? getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback : fallback;
 
   const run = async () => {
     setLoading(true);
@@ -285,14 +294,55 @@ function KMeansTab() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-center gap-3">
-        <Badge variant="outline" className="gap-1.5 text-[11px]">Silhouette: <b className="num" dir="ltr">{res.silhouette.toFixed(3)}</b></Badge>
-        <Badge variant="outline" className="gap-1.5 text-[11px]">Inertia (WCSS): <b className="num" dir="ltr">{res.inertia.toFixed(1)}</b></Badge>
-        <Badge variant="outline" className="gap-1.5 text-[11px]">تکرار: {fa(res.iterations, 0)} {res.converged ? "(همگرا)" : "(حد تکرار)"}</Badge>
-        <Badge variant="outline" className="gap-1.5 text-[11px]">Seed: <b className="num" dir="ltr">{res.seed}</b></Badge>
-        <span className="text-[11px] text-muted-foreground">مدل با شناسه ثبت شد — بازتولیدپذیر</span>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-3">
+          <Badge variant="outline" className="gap-1.5 text-[11px]">Silhouette: <b className="num" dir="ltr">{res.silhouette.toFixed(3)}</b></Badge>
+          <Badge variant="outline" className="gap-1.5 text-[11px]">Inertia (WCSS): <b className="num" dir="ltr">{res.inertia.toFixed(1)}</b></Badge>
+          <Badge variant="outline" className="gap-1.5 text-[11px]">تکرار: {fa(res.iterations, 0)} {res.converged ? "(همگرا)" : "(حد تکرار)"}</Badge>
+          <Badge variant="outline" className="gap-1.5 text-[11px]">Seed: <b className="num" dir="ltr">{res.seed}</b></Badge>
+        </div>
+        <div className="flex rounded-lg border p-0.5 bg-muted/40" role="tablist" aria-label="نمای پراکندگی">
+          <Button variant={!view3d ? "secondary" : "ghost"} size="sm" className="h-7 px-2.5 text-[11px] gap-1" onClick={() => setView3d(false)} role="tab" aria-selected={!view3d}><ImageIcon className="h-3.5 w-3.5" /> دوبعدی</Button>
+          <Button variant={view3d ? "secondary" : "ghost"} size="sm" className="h-7 px-2.5 text-[11px] gap-1" onClick={() => setView3d(true)} role="tab" aria-selected={view3d}><Boxes className="h-3.5 w-3.5" /> سه‌بعدی</Button>
+        </div>
       </div>
+      <span className="text-[11px] text-muted-foreground block -mt-2">مدل با شناسه ثبت شد — بازتولیدپذیر</span>
 
+      {view3d ? (
+        <Card>
+          <CardHeader className="pb-1">
+            <CardTitle className="text-sm">پراکندگی سه‌بعدی بناها — سطح × ارتفاع × تقاضا به رنگ تیپ (WebGL)</CardTitle>
+          </CardHeader>
+          <CardContent className="p-3 space-y-2">
+            <Scatter3D
+              points={(res.scatter3d ?? []).map((p) => ({ x: p.a, y: p.c, z: p.b, color: BAR_COLORS[p.label % BAR_COLORS.length], code: p.code }))}
+              axes={{ x: "سطح اشغال (m²)", y: "تقاضای کل (kWh/m²·a)", z: "ارتفاع (m)" }}
+              height={430}
+              bg={v("--card", isDark ? "#142838" : "#fffdf8")}
+              gridColor={v("--border", isDark ? "#24425a" : "#e8e2d2")}
+              labelColor={v("--muted-foreground", isDark ? "#9db0be" : "#5d6b77")}
+              onReady={(h) => (scatter3dRef.current = h)}
+              ariaLabel="پراکندگی سه‌بعدی بناها به رنگ تیپ خوشه"
+            />
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-[10px] text-copper leading-5">
+                نمای اکتشافی سه ویژگی با مقدار اصلی است؛ خوشه‌بندی روی هر ۵ ویژگی استانداردشده انجام شده و محورها مقیاس یکسان ندارند.
+              </p>
+              <Button size="sm" variant="outline" className="gap-1.5" onClick={() => {
+                const url = scatter3dRef.current?.toDataURL(3);
+                if (!url) return;
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "cluster-3d-scatter.png";
+                a.click();
+                toast({ title: "PNG سه‌بعدی ذخیره شد", description: "وضوح چاپ ۳×" });
+              }}>
+                <ImageIcon className="h-3.5 w-3.5" /> خروجی PNG چاپ
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
       <div className="grid lg:grid-cols-2 gap-5">
         <Card>
           <CardHeader className="pb-1"><CardTitle className="text-sm">پروفایل تیپ‌ها (نمایش مقایسه‌ای نرمال‌شده)</CardTitle></CardHeader>
@@ -303,6 +353,7 @@ function KMeansTab() {
           <CardContent className="p-3"><EChart option={scatterOption ?? {}} height={330} /></CardContent>
         </Card>
       </div>
+      )}
 
       <Card>
         <CardHeader className="pb-1"><CardTitle className="text-sm">جدول تیپ‌ها — مقادیر اصلی</CardTitle></CardHeader>

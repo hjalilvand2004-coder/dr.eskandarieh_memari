@@ -14,7 +14,25 @@ import { useAppStore } from "@/lib/store";
 import { viridisAt } from "@/lib/palette";
 import type { IndicatorMeta } from "@/lib/indicators";
 import { toast } from "@/hooks/use-toast";
-import { Map, ZoomIn, ZoomOut, Crosshair, Layers, Ruler, Sun, Leaf, Loader2 } from "lucide-react";
+import { useTheme } from "next-themes";
+import dynamic from "next/dynamic";
+import { Map, ZoomIn, ZoomOut, Crosshair, Layers, Ruler, Sun, Leaf, Loader2, Boxes, Image as ImageIcon } from "lucide-react";
+
+const Atlas3DView = dynamic(() => import("./atlas-3d"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[420px] md:h-[520px] grid place-items-center bg-muted/30">
+      <span className="flex items-center gap-2 text-xs text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> بارگذاری موتور سه‌بعدی…</span>
+    </div>
+  ),
+});
+
+/** ترکیب دو رنگ hex (t=0 → a، t=1 → b) */
+function mixHex(a: string, b: string, t: number): string {
+  const p = (h: string, i: number) => parseInt(h.slice(i, i + 2), 16) || 0;
+  const m = (x: number, y: number) => Math.round(x + (y - x) * t).toString(16).padStart(2, "0");
+  return `#${m(p(a, 1), p(b, 1))}${m(p(a, 3), p(b, 3))}${m(p(a, 5), p(b, 5))}`;
+}
 
 interface Building {
   code: string;
@@ -58,10 +76,14 @@ export function AtlasView() {
   const [showLabels, setShowLabels] = React.useState(true);
   const [showVegetation, setShowVegetation] = React.useState(false);
   const [selected, setSelected] = React.useState<string | null>(null);
+  const [viewMode, setViewMode] = React.useState<"2d" | "3d">("2d");
   const [viewBox, setViewBox] = React.useState("");
   const dragRef = React.useRef<{ x: number; y: number; vb: number[] } | null>(null);
   const svgRef = React.useRef<SVGSVGElement>(null);
   const { setAtlasSelection } = useAppStore();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+  const bgHex = isDark ? "#0d1a26" : "#f3ecdd";
 
   React.useEffect(() => {
     fetch("/api/atlas")
@@ -96,6 +118,15 @@ export function AtlasView() {
     const t = max > min ? (v - min) / (max - min) : 0.5;
     return viridisAt(t);
   };
+
+  // رنگ‌های نمای سه‌بعدی: hex واقعی + حالت انتخاب (مسی) و کم‌رنگ‌سازی سایرین
+  const colors3d: Record<string, { color: string; heightM: number; polygon: [number, number][]; courtyard: [number, number][] | null }> = {};
+  for (const b of data?.buildings ?? []) {
+    const base = colorOf(b);
+    const hex = base.startsWith("var(") ? (isDark ? "#3a4a58" : "#c9c2b2") : base;
+    const color = selected ? (b.code === selected ? "#b4693b" : mixHex(hex, bgHex, 0.62)) : hex;
+    colors3d[b.code] = { color, heightM: b.indicators.heightM, polygon: b.polygon, courtyard: b.courtyard };
+  }
 
   const selectBuilding = (code: string) => {
     setSelected(code === selected ? null : code);
@@ -148,7 +179,7 @@ export function AtlasView() {
     <div className="space-y-5">
       <SectionHeader
         title="اطلس مکانی و ریخت‌شناسی"
-        subtitle="نقشه تعاملی دوبعدی بافت نمایشی — رنگ‌آمیزی بر پایه شاخص انتخابی با محاسبه واقعی از هندسه. انتخاب بنا با نمودارها هماهنگ می‌شود."
+        subtitle="نقشه تعاملی دوبعدی و سه‌بعدی بافت نمایشی — رنگ‌آمیزی بر پایه شاخص انتخابی با محاسبه واقعی از هندسه. انتخاب بنا با نمودارها هماهنگ می‌شود."
         icon={<Map />}
         actions={
           <div className="flex items-center gap-2">
@@ -180,18 +211,26 @@ export function AtlasView() {
           <CardHeader className="pb-2">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <CardTitle className="text-sm flex items-center gap-2"><Layers className="h-4 w-4 text-primary" /> نقشه تعاملی — لایه‌ها و رنگ‌آمیزی</CardTitle>
-              <div className="flex items-center gap-1">
-                <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => zoom(0.8)} aria-label="بزرگ‌نمایی"><ZoomIn className="h-4 w-4" /></Button>
-                <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => zoom(1.25)} aria-label="کوچک‌نمایی"><ZoomOut className="h-4 w-4" /></Button>
-                <Button variant="outline" size="icon" className="h-8 w-8" onClick={resetView} aria-label="بازنشانی نما"><Crosshair className="h-4 w-4" /></Button>
+              <div className="flex items-center gap-2">
+                <div className="flex rounded-lg border p-0.5 bg-muted/40" role="tablist" aria-label="حالت نمایش نقشه">
+                  <Button variant={viewMode === "2d" ? "secondary" : "ghost"} size="sm" className="h-7 px-2.5 text-[11px] gap-1" onClick={() => setViewMode("2d")} aria-selected={viewMode === "2d"} role="tab"><ImageIcon className="h-3.5 w-3.5" /> دوبعدی</Button>
+                  <Button variant={viewMode === "3d" ? "secondary" : "ghost"} size="sm" className="h-7 px-2.5 text-[11px] gap-1" onClick={() => setViewMode("3d")} aria-selected={viewMode === "3d"} role="tab"><Boxes className="h-3.5 w-3.5" /> سه‌بعدی</Button>
+                </div>
+                {viewMode === "2d" && (
+                  <>
+                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => zoom(0.8)} aria-label="بزرگ‌نمایی"><ZoomIn className="h-4 w-4" /></Button>
+                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => zoom(1.25)} aria-label="کوچک‌نمایی"><ZoomOut className="h-4 w-4" /></Button>
+                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={resetView} aria-label="بازنشانی نما"><Crosshair className="h-4 w-4" /></Button>
+                  </>
+                )}
               </div>
             </div>
             <div className="flex flex-wrap gap-x-5 gap-y-1.5 pt-1.5">
               {[
                 { l: "محدوده بلوک‌ها", v: showBlocks, set: setShowBlocks },
                 { l: "حیاط‌های مرکزی", v: showCourtyards, set: setShowCourtyards },
-                { l: "برچسب بناها", v: showLabels, set: setShowLabels },
-                { l: "پوشش گیاهی (نمایشی)", v: showVegetation, set: setShowVegetation },
+                { l: "برچسب بناها (دوبعدی)", v: showLabels, set: setShowLabels },
+                { l: "پوشش گیاهی (نمایشی، دوبعدی)", v: showVegetation, set: setShowVegetation },
               ].map((s) => (
                 <label key={s.l} className="flex items-center gap-1.5 text-[11px] cursor-pointer">
                   <Switch checked={s.v} onCheckedChange={s.set} className="scale-90" />
@@ -201,6 +240,18 @@ export function AtlasView() {
             </div>
           </CardHeader>
           <CardContent className="p-0">
+            {viewMode === "3d" ? (
+              <Atlas3DView
+                buildings={data.buildings.map((b) => ({ code: b.code, polygon: b.polygon, courtyard: b.courtyard, heightM: b.indicators.heightM, color: colors3d[b.code]?.color ?? "#8b8b8b" }))}
+                blocks={data.blocks.map((bl) => ({ code: bl.code, polygon: bl.polygon }))}
+                selected={selected}
+                onSelect={selectBuilding}
+                showBlocks={showBlocks}
+                showCourtyards={showCourtyards}
+                bg={bgHex}
+                ariaLabel={`نمای سه‌بعدی ریخت‌شناسی با رنگ‌آمیزی ${mode.label}`}
+              />
+            ) : (
             <svg
               ref={svgRef}
               viewBox={viewBox}
@@ -281,6 +332,7 @@ export function AtlasView() {
                 </g>
               ))}
             </svg>
+            )}
           </CardContent>
           {/* راهنمای رنگ */}
           <div className="px-4 py-3 border-t bg-muted/30">

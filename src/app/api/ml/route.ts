@@ -130,6 +130,14 @@ export async function POST(req: Request) {
         label: res.labels[i],
         code: r.code,
       }));
+      // مختصات سه‌بعدی اکتشافی (سه ویژگی اصلی با مقدار اصلی) برای نمای سه‌بعدی آزمایشگاه
+      const scatter3d = rows.map((r, i) => ({
+        code: r.code,
+        a: Math.round(r.footprintM2 * 10) / 10,
+        b: r.heightM,
+        c: Math.round(r.total * 10) / 10,
+        label: res.labels[i],
+      }));
       return NextResponse.json({
         ok: true,
         data: {
@@ -145,6 +153,7 @@ export async function POST(req: Request) {
           featureLabels: featureKeys.map((f) => featureLabels[f]),
           profiles,
           points,
+          scatter3d,
           demoLabel: demoNote,
           seed,
         },

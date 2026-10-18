@@ -17,9 +17,10 @@ import { EChart, useBaseOption } from "@/components/charts/echart";
 import { useAppStore, canWrite } from "@/lib/store";
 import { toast } from "@/hooks/use-toast";
 import { useTheme } from "next-themes";
+import dynamic from "next/dynamic";
 import {
   ClipboardList, Plus, HelpCircle, FlaskConical, BookMarked, StickyNote,
-  KanbanSquare, Network, Upload, RefreshCw, ChevronLeft,
+  KanbanSquare, Network, Upload, RefreshCw, ChevronLeft, Workflow, Loader2,
 } from "lucide-react";
 
 interface BootstrapShape {
@@ -215,7 +216,7 @@ export function ResearchView() {
 
         {/* ── نقشه ارتباطات ── */}
         <TabsContent value="map" className="mt-4">
-          <ResearchMapGraph data={data} />
+          <ResearchMapCard data={data} />
         </TabsContent>
       </Tabs>
     </div>
@@ -392,7 +393,41 @@ function ReferencesTab({ refs, writable, act }: { refs: BootstrapShape["referenc
   );
 }
 
-// ─────────────── نقشه ارتباطات پژوهش (گراف) ───────────────
+// ─────────────── نقشه ارتباطات پژوهش (انتخاب نمایش) ───────────────
+
+const ResearchFlowDiagram = dynamic(() => import("./research-flow"), {
+  ssr: false,
+  loading: () => (
+    <div className="h-[520px] rounded-lg border grid place-items-center bg-muted/30">
+      <span className="flex items-center gap-2 text-xs text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> بارگذاری دیاگرام…</span>
+    </div>
+  ),
+});
+
+function ResearchMapCard({ data }: { data: BootstrapShape }) {
+  const [mode, setMode] = React.useState<"flow" | "force">("flow");
+  return (
+    <Card>
+      <CardHeader className="pb-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <CardTitle className="text-sm">نقشه ارتباطات پژوهش — پرسش ← فرضیه ← متغیر ← داده ← روش ← آزمایش ← نتیجه ← فصل</CardTitle>
+          <div className="flex rounded-lg border p-0.5 bg-muted/40" role="tablist" aria-label="نوع دیاگرام">
+            <Button variant={mode === "flow" ? "secondary" : "ghost"} size="sm" className="h-7 px-2.5 text-[11px] gap-1" onClick={() => setMode("flow")} role="tab" aria-selected={mode === "flow"}><Workflow className="h-3.5 w-3.5" /> دیاگرام ساختاری</Button>
+            <Button variant={mode === "force" ? "secondary" : "ghost"} size="sm" className="h-7 px-2.5 text-[11px] gap-1" onClick={() => setMode("force")} role="tab" aria-selected={mode === "force"}><Network className="h-3.5 w-3.5" /> گراف نیرویی</Button>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="p-4">
+        {mode === "flow" ? <ResearchFlowDiagram data={data} /> : <ResearchMapGraph data={data} />}
+        <p className="text-[11px] text-muted-foreground mt-2 leading-5">
+          {mode === "flow"
+            ? "دیاگرام ساختاری تعاملی (React Flow): لایه‌بندی قطعی زنجیره ردیابی؛ هر نتیجه تحلیل باید در این زنجیره قابل ردیابی به داده، روش و نسخه باشد."
+            : "گراف تعاملی است (جابه‌جایی و بزرگ‌نمایی ممکن است). هر نتیجه تحلیل باید در این زنجیره قابل ردیابی به داده، روش و نسخه باشد."}
+        </p>
+      </CardContent>
+    </Card>
+  );
+}
 
 function ResearchMapGraph({ data }: { data: BootstrapShape }) {
   const base = useBaseOption();

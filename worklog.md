@@ -177,3 +177,26 @@ Work Log:
 Stage Summary:
 - مخزن اکنون هم سورس کامل و هم نسخه اجرای قابل حمل ویندوز را دارد؛ دانلود ZIP مخزن → portable/START-WINDOWS.bat → اجرا بدون هیچ پیش‌نیازی
 - ران‌تایم‌های مک/لینوکس (>100MB سقف گیت‌هاب) فقط در Release ZIPها هستند؛ در مخزن با node سیستم جایگزین می‌شوند
+
+---
+Task ID: 10
+Agent: main (Z.ai)
+Task: توسعه قابلیت‌های مرحله ۲ — نمای سه‌بعدی نقشه + نمودار سه‌بعدی و دیاگرام ساختاری (React Flow)؛ بدون پوش به گیت‌هاب (دستور صریح کاربر)
+
+Work Log:
+- تصمیم فنی: echarts-gl با echarts ۶ ناسازگار است → نمودار سه‌بعدی با Three.js (نسخه ۰.۱۸۶) ساخته شد؛ نقشه سه‌بعدی با maplibre-gl v6؛ دیاگرام با @xyflow/react v12
+- atlas-3d.tsx: fill-extrusion ارتفاع واقعی بناها (+ضریب نمایشی ×۱/×۲/×۳)، نگاشت متر محلی → مختصات بافت تاریخی شیراز (۲۹.۶۱۰۳، ۵۲.۵۳۵۰)، رنگ شاخص‌محور هماهنگ با دوبعدی، انتخاب مسی + کم‌رنگ‌سازی، حیاط/بلوک، fitBounds با pitch 52 — کاملاً آفلاین (بدون کاشی/گلیف اینترنتی)
+- رفع دو باگ اصلی: (۱) maplibre v6 default export ندارد → ایمپورت named؛ (۲) Worker failed to load → setWorkerUrl("/maplibre-gl-worker.js") + کپی worker در public؛ (۳) تضاد absolute inset-0 با position:relative خودکار maplibre → کانتینر h-full
+- scatter3d.tsx: Points با vertexColors، OrbitControls damping، Raycaster هاور با tooltip فارسی، برچسب محور پروژه‌شده HTML، خروجی toDataURL با pixelRatio ۳ (preserveDrawingBuffer)
+- API kmeans: فیلد scatter3d (کد، سطح، ارتفاع، تقاضا، برچسب خوشه)
+- lab-view: کلید دوبعدی/سه‌بعدی در تب خوشه‌بندی + خروجی PNG
+- research-flow.tsx: لایه‌بندی قطعی RTL (۷ لایه × ROW 86px)، گره‌های واقعی پرسش/فرضیه (linkedQuestionCode)/فصل، MiniMap، تم‌آگاه با متغیر CSS؛ در کنار گراف نیرویی قدیمی با کلید تعویض
+- charts-view: نوع scatter3d با کپشن/عنوان خودکار، CSV سه‌ستونه، PNG چاپی، SVG صادقانه غیرفعال
+- about-view: سه قابلیت به «اجراشده» اضافه شد؛ «کاشی پایه اینترنتی» به ناقص/مرحله ۳ منتقل شد
+- راستی‌آزمایی مرورگری کامل: ورود مدیر → اطلس ۳بعدی (رندر، کلیک A-09 → پنل کامل)، آزمایشگاه kmeans ۳بعدی، React Flow کامل، استودیو scatter3d، تم شیشه‌ای روی ۳بعدی، موبایل ۳۹۰px — صفر خطای کنسول
+- لینت: ۰ خطا (استثنای portable/dist/download در eslint ignores + حذف useMemoهای دستی برای React Compiler)
+- کامیت محلی aa4d5eb + f82543a — هیچ پوشی انجام نشد
+
+Stage Summary:
+- هر دو قابلیت نقشه راه مرحله ۲ در سامانه فعال و مرورگری راستی‌آزمایی شده‌اند؛ همه اصول صداقت علمی (برچسب نمایشی، موقعیت نمایشی، ضریب ارتفاع نمایشی) حفظ شده است
+- آماده برای: بسته‌بندی v1.2.0 + پوش پس از اعلام کاربر

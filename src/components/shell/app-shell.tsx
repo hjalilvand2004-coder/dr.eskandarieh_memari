@@ -10,6 +10,7 @@ import { useTheme } from "next-themes";
 import { toast } from "@/hooks/use-toast";
 import { DemoBadge } from "@/components/shared/ui-bits";
 import { ThemeGallery } from "./theme-gallery";
+import { ServerIdentity } from "./server-identity";
 import {
   LayoutDashboard, ClipboardList, Database, Map, FlaskConical, BrainCircuit,
   ShieldCheck, LineChart, Target, Bot, Info, Moon, Sun, Menu, X, Compass,
@@ -245,6 +246,7 @@ export function AppShell() {
         <div className="flex-1 flex flex-col min-w-0">
           {/* نوار بالا */}
           <header data-glass="header" className="sticky top-0 z-40 bg-background/85 backdrop-blur-xl border-b no-print">
+            <ServerIdentity />
             <div className="px-4 h-15 flex items-center gap-2.5">
               <button className="lg:hidden p-1.5 rounded-md hover:bg-accent" onClick={() => setMobileOpen(true)} aria-label="باز کردن نوار کناری">
                 <Menu className="h-5 w-5" />

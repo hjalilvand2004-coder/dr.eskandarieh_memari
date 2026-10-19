@@ -1,19 +1,20 @@
 #!/usr/bin/env node
 /**
  * ═══════════════════════════════════════════════════════════════
- *  Shiraz Smart Atlas — Resilient Portable Launcher (v1.2.3)
+ *  Shiraz Smart Atlas — Resilient Portable Launcher (v1.3.0)
  *  لانچر مقاوم سامانهٔ پرتابل — نسخهٔ مرجع (master)
- *  سینک به portable/app/server.cjs توسط scripts/sync-portable-v123.sh
+ *  سینک به portable/app/server.cjs توسط scripts/sync-portable-v130.sh
  * ═══════════════════════════════════════════════════════════════
  *  Fixes / رفع اشکالات:
  *   1) DATABASE_URL: چند استراتژی URL + تست واقعی با SELECT 1
  *   2) Port conflict: اولین پورت آزاد 3000..3020
- *   3) v1.2.3: بستن خودکار نمونه‌های کهنهٔ همین سامانه (علت واقعی
- *      «Internal Server Error» بعد از ارتقا: نمونهٔ قدیمی روی پورت)
- *   4) port.txt برای بازشدن مرورگر روی نشانی درست
- *   5) خودآزمایی + گزارش کامل app/diagnostic-report.txt
- *      (بدنهٔ خام پاسخ خراب + آزمون لود ماژول‌ها + هویت نسخه)
- *   6) خطاها شفاف و دوزبانه
+ *   3) v1.2.3: بستن نمونه‌های کهنه با شناسهٔ HTTP
+ *   4) v1.3.0: پاکسازی قطعی زامبی بر اساس مسیر پوشهٔ برنامه
+ *      (حتی وقتی پروسهٔ قدیمی هنگ کرده و HTTP جواب نمی‌دهد)
+ *   5) port.txt برای بازشدن مرورگر روی نشانی درست
+ *   6) خودآزمایی + گزارش کامل app/diagnostic-report.txt
+ *      + ثبت کرش‌های غیرمنتظره در app/crash-log.txt
+ *   7) خطاها شفاف و دوزبانه
  */
 "use strict";
 
@@ -28,7 +29,7 @@ const DB_PATH = path.join(APP_DIR, "db", "custom.db");
 const PORT_FILE = path.join(APP_DIR, "port.txt");
 const BASE_PORT = parseInt(process.env.PORT || "3000", 10) || 3000;
 const PORT_MAX = BASE_PORT + 20;
-const VERSION = "1.2.3";
+const VERSION = "1.3.0";
 const IS_WIN = process.platform === "win32";
 
 const LAUNCH_LOG = [];
@@ -160,6 +161,76 @@ function killPid(pid) {
   } catch { return false; }
 }
 
+/**
+ * v1.3.0 — پاکسازی قطعی زامبی‌ها بر اساس «مسیر پوشهٔ برنامه»
+ *
+ * سناریوی عامل تکرار «Internal Server Error»: پروسهٔ node از اجرای
+ * قبل هنوز زنده است و از همین پوشه سرو می‌دهد؛ بعد از ارتقاء، همان
+ * پروسهٔ قدیمی فایل‌های استاتیک «جدید» را از دیسک می‌خواند ولی کد
+ * «قدیمی» را از حافظه اجرا می‌کند → همهٔ APIها 500 خام.
+ *
+ * این تابع هر پروسه‌ای را که به‌وضوح متعلق به همین برنامه است
+ * می‌بندد، حتی اگر هنگ کرده و به درخواست HTTP جواب ندهد:
+ *   ویندوز: CommandLine یا ExecutablePath شامل مسیر APP_DIR باشد،
+ *           یا server.cjs را اجرا کرده باشد، یا node.exe همراه
+ *           بسته (runtime\windows-x64) را اجرا کرده باشد.
+ *   لینوکس/مک: pgrep -f روی مسیر APP_DIR / server.cjs
+ * پروسهٔ خودِ لانچر هرگز بسته نمی‌شود.
+ */
+function listZombiePids() {
+  const me = process.pid;
+  const pids = new Set();
+  const addIfOk = (p) => { if (Number.isFinite(p) && p > 0 && p !== me) pids.add(p); };
+
+  if (IS_WIN) {
+    const appDirPs = APP_DIR.replace(/'/g, "''");
+    const ps =
+      `$ErrorActionPreference='SilentlyContinue';` +
+      `Get-CimInstance Win32_Process -Filter "Name like 'node%.exe'" | ` +
+      `Where-Object { $_.ProcessId -ne ${me} } | ` +
+      `Where-Object { ` +
+      `$_.CommandLine -like '*${appDirPs}*' -or ` +
+      `$_.ExecutablePath -like '*${appDirPs}*' -or ` +
+      `$_.CommandLine -like '*server.cjs*' -or ` +
+      `$_.ExecutablePath -like '*\\runtime\\windows-x64\\node.exe' ` +
+      `} | ForEach-Object { $_.ProcessId }`;
+    try {
+      const out = execSync(
+        `powershell -NoProfile -NonInteractive -Command "${ps.replace(/"/g, '\\"')}"`,
+        { timeout: 15000, windowsHide: true },
+      ).toString();
+      for (const m of out.matchAll(/\d+/g)) addIfOk(parseInt(m[0], 10));
+    } catch (e) {
+      log("zombie scan (powershell) failed: " + String((e && e.message) || e).slice(0, 80));
+    }
+    return [...pids];
+  }
+
+  // لینوکس/مک — الگوها فقط پروسه‌های همین برنامه را می‌گیرند
+  try {
+    const out = execSync(
+      `pgrep -f 'server\\.cjs' | grep -v '^${me}$' || true`,
+      { timeout: 8000, shell: true },
+    ).toString();
+    for (const m of out.matchAll(/\d+/g)) addIfOk(parseInt(m[0], 10));
+  } catch { /* ignore */ }
+  return [...pids];
+}
+
+function killZombiesByPath() {
+  const pids = listZombiePids();
+  if (pids.length === 0) {
+    log("Zombie scan: no stale processes of this app found. ✓");
+    return 0;
+  }
+  let closed = 0;
+  for (const pid of pids) {
+    if (killPid(pid)) { closed++; log(`Closed stale process of this app (PID ${pid}) ✓`); }
+    else { log(`Could not close stale PID ${pid} — will try again via port check.`); }
+  }
+  return closed;
+}
+
 async function takeOverStaleInstances() {
   let closed = 0;
   for (let p = BASE_PORT; p <= PORT_MAX; p++) {
@@ -252,6 +323,9 @@ function probeRouteModules(reportLines) {
     );
   }
   process.env.DATABASE_URL = await pickDatabaseUrl(real);
+
+  /* v1.3.0: اول زامبی‌های همین برنامه (حتی هنگ‌کرده) بسته شوند */
+  killZombiesByPath();
 
   await takeOverStaleInstances();
 
@@ -389,9 +463,22 @@ function writeReport(port, lines) {
   } catch { /* best effort */ }
 }
 
+function appendCrashLog(kind, e) {
+  try {
+    const stamp = new Date().toISOString();
+    fs.appendFileSync(
+      path.join(APP_DIR, "crash-log.txt"),
+      "[" + stamp + "] " + kind + " v" + VERSION + "\n" +
+      String((e && e.stack) || e) + "\n\n",
+    );
+  } catch { /* best effort */ }
+}
+
 process.on("uncaughtException", (e) => {
   console.error("[ShirazAtlas] Unexpected error:", (e && e.stack) || e);
+  appendCrashLog("uncaughtException", e);
 });
 process.on("unhandledRejection", (e) => {
   console.error("[ShirazAtlas] Async error:", (e && (e.stack || e.message)) || e);
+  appendCrashLog("unhandledRejection", e);
 });

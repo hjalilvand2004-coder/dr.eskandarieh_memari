@@ -1,11 +1,11 @@
 @echo off
 setlocal enableextensions
 chcp 65001 >nul
-title Shiraz Smart Atlas v1.2.3 - Morphology and Energy
+title Shiraz Smart Atlas v1.3.0 - Morphology and Energy
 
 rem ============================================================
 rem  Shiraz Smart Atlas | One-click portable launcher (Windows)
-rem  v1.2.3 - resilient start:
+rem  v1.3.0 - resilient start:
 rem    * Safe with folder paths containing spaces / Persian chars
 rem    * Auto port fallback if 3000 is busy  (app writes port.txt)
 rem    * v1.2.3: stale instances of THIS app from earlier runs are
@@ -66,7 +66,7 @@ rem Clean stale port file from a previous run
 del /f /q "%APPDIR%\port.txt" >nul 2>&1
 
 echo ============================================================
-echo   Shiraz Smart Atlas v1.2.3
+echo   Shiraz Smart Atlas v1.3.0
 echo   URL   : shown below after start - browser opens automatically
 echo   Data  : app\db\custom.db   SQLite - 100 percent local
 echo.
@@ -81,6 +81,8 @@ echo     و مرورگر خودکار باز می‌شود. اگر تب قدیم
 echo     آن را ببندید و فقط از نشانی جدید استفاده کنید.
 echo FA: نمونه‌های قدیمی همین سامانه که از اجرای قبل مانده‌اند،
 echo     به‌طور خودکار بسته می‌شوند.
+echo FA: پس از بازشدن سامانه، در نوار بالا عبارت «سرور نسخهٔ ۱.۳.۰»
+echo     را ببینید؛ اگر عدد دیگری بود یعنی یک نمونهٔ قدیمی هنوز فعال است.
 echo.
 
 rem Auto-open browser at the exact port written by the server

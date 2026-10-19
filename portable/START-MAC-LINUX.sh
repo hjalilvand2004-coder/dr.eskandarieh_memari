@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ============================================================
 #  Shiraz Smart Atlas | One-click portable launcher (Mac/Linux)
-#  v1.2.3 — resilient start:
+#  v1.3.0 — resilient start:
 #    * Safe with paths containing spaces / non-ASCII chars
 #      (server.cjs builds a percent-encoded DATABASE_URL)
 #    * Auto port fallback if 3000 is busy (app writes port.txt)
@@ -45,7 +45,7 @@ fi
 rm -f "$APPDIR/port.txt"
 
 echo "============================================================"
-echo "  Shiraz Smart Atlas v1.2.3"
+echo "  Shiraz Smart Atlas v1.3.0"
 echo "  URL   : shown below after start (browser opens automatically)"
 echo "  v1.2.3: stale instances of this app from earlier runs are closed automatically"
 echo "  Data  : app/db/custom.db  (SQLite, 100% local)"

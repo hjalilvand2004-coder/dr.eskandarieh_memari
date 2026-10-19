@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { APP_SERVICE, APP_VERSION } from "@/lib/version";
 
 export const dynamic = "force-dynamic";
 
 /**
  * نقطهٔ بررسی سلامت — سبک و بدون وابستگی به داده‌ها.
- * برای خودآزمایی لانچر و عیب‌یابی سریع کاربر استفاده می‌شود.
+ * برای خودآزمایی لانچر، چیپ شناسنامهٔ سرور در رابط کاربری و عیب‌یابی
+ * سریع استفاده می‌شود. نسخه از lib/version خوانده می‌شود تا هرگز با
+ * نسخهٔ رابط کاربری ناهم‌خوان نشود.
  */
 export async function GET() {
   const started = Date.now();
@@ -27,10 +30,11 @@ export async function GET() {
 
   return NextResponse.json({
     ok: true,
-    service: "shiraz-smart-atlas",
-    version: "1.2.3",
+    service: APP_SERVICE,
+    version: APP_VERSION,
     node: process.version,
     platform: `${process.platform}-${process.arch}`,
+    pid: process.pid,
     uptimeSec: Math.round(process.uptime()),
     db: {
       ok: dbOk,

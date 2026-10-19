@@ -355,3 +355,19 @@ Work Log:
 Stage Summary:
 - main = 0037596، tag/Release v1.3.0 (latest)؛ ریلیزهای قدیمی منسوخ علامت خوردند
 - پیام به کاربر: فقط Shiraz-Atlas-v1.3.0-Windows.zip (~117MiB) از ریلیز v1.3.0؛ استخراج در پوشه جدید؛ چیپ سبز = سالم
+
+---
+Task ID: 20
+Agent: main (Z.ai)
+Task: بررسی گزارش کاربر درباره حجم ۹۸ مگ ZIP دانلودی از گیت‌هاب + اطمینان از بروز بودن مخزن
+
+Work Log:
+- API ریلیزها: v1.3.0 (latest) با asset «Shiraz-Atlas-v1.3.0-Windows.zip» = ۱۱۶.۷MB موجود است؛ download_count = 0
+- اندازه‌گیری واقعی ZIP سورس خودکار گیت‌هاب (Code → Download ZIP): ۱۰۰,۵۲۸,۱۰۶ بایت = ۹۵.۹MB → منطبق با «زیر ۱۰۰ مگ» کاربر در همه نسخه‌ها
+- تطبیق هش: sha256 فایل محلی dist/Shiraz-Atlas-v1.3.0-Windows.zip با SHA256SUMS-v1.3.0.txt ریلیز یکسان (187e68cb…) → فایل صحیح روی ریلیز سالم و کامل است
+- تشخیص نهایی: گیت‌هاب بروز است؛ کاربر فایل اشتباه (ZIP سورس ~۹۶مگ از دکمه Code→Download ZIP یا لینک Source code (zip) در صفحه ریلیز) دانلود می‌کند
+- بدنه ریلیز v1.3.0 با هشدار صریح درباره هر دو مسیر خطا به‌روزرسانی شد (scripts/patch-v130-release-note.py)
+- پوش commit جاافتاده 09c9eba ابتدا با «repository rule violations» رد شد → علت: توکن گیت‌هاب داخل فایل اسکریپت (push protection) → توکن به متغیر محیطی GITHUB_TOKEN منتقل شد، commit به 893a825 amended و پوش موفق
+Stage Summary:
+- مخزن ۱۰۰٪ سینک (main محلی = ریموت = 893a825)؛ ریلیز v1.3.0 سالم، latest و با راهنمای دانلود تقویت‌شده
+- پیام به کاربر: فقط فایل Shiraz-Atlas-v1.3.0-Windows.zip (~۱۱۷مگ) از صفحه Releases؛ فایل ~۹۶-۹۸مگ سورس اجرایی‌نشدنی است

@@ -1,13 +1,16 @@
 @echo off
 setlocal enableextensions
 chcp 65001 >nul
-title Shiraz Smart Atlas v1.2.2 - Morphology and Energy
+title Shiraz Smart Atlas v1.2.3 - Morphology and Energy
 
 rem ============================================================
 rem  Shiraz Smart Atlas | One-click portable launcher (Windows)
-rem  v1.2.2 - resilient start:
+rem  v1.2.3 - resilient start:
 rem    * Safe with folder paths containing spaces / Persian chars
 rem    * Auto port fallback if 3000 is busy  (app writes port.txt)
+rem    * v1.2.3: stale instances of THIS app from earlier runs are
+rem      closed automatically (old copies kept answering on port
+rem      3000 with "Internal Server Error" after upgrading)
 rem    * Browser opens automatically at the correct port
 rem    * Pre-flight build integrity check (detects partial extraction)
 rem    * Self-test after start (app\diagnostic-report.txt)
@@ -63,8 +66,8 @@ rem Clean stale port file from a previous run
 del /f /q "%APPDIR%\port.txt" >nul 2>&1
 
 echo ============================================================
-echo   Shiraz Smart Atlas v1.2.2
-echo   URL   : http://localhost:3000   auto-fallback if busy
+echo   Shiraz Smart Atlas v1.2.3
+echo   URL   : shown below after start - browser opens automatically
 echo   Data  : app\db\custom.db   SQLite - 100 percent local
 echo.
 echo   Keep this window OPEN while using the system.
@@ -73,6 +76,11 @@ echo   Tip: keep this folder on a LOCAL path, not OneDrive.
 echo ============================================================
 echo.
 echo Starting server... your browser will open automatically.
+echo FA: پس از آماده‌شدن، نشانی صحیح در همین پنجره نمایش داده می‌شود
+echo     و مرورگر خودکار باز می‌شود. اگر تب قدیمی localhost:3000 باز است،
+echo     آن را ببندید و فقط از نشانی جدید استفاده کنید.
+echo FA: نمونه‌های قدیمی همین سامانه که از اجرای قبل مانده‌اند،
+echo     به‌طور خودکار بسته می‌شوند.
 echo.
 
 rem Auto-open browser at the exact port written by the server

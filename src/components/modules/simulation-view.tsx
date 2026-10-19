@@ -8,6 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { SectionHeader, EmptyState, fa, KeyValue, UnconfiguredBadge } from "@/components/shared/ui-bits";
 import { toast } from "@/hooks/use-toast";
+import { fetchJson } from "@/lib/safe-json";
 import { FlaskConical, Cog, TriangleAlert, Layers3, ClipboardList } from "lucide-react";
 
 interface SimModel {
@@ -32,13 +33,12 @@ export function SimulationView() {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    fetch("/api/bootstrap")
-      .then((r) => r.json())
+    fetchJson("/api/bootstrap")
       .then((j) => {
-        if (j.ok) {
-          setSimModel(j.data.simModel);
-          setRuns(j.data.experimentRuns);
-          setWeather(j.data.weather);
+        if (j.ok && j.data) {
+          setSimModel((j.data as Record<string, unknown>).simModel as never);
+          setRuns((j.data as Record<string, unknown>).experimentRuns as never);
+          setWeather((j.data as Record<string, unknown>).weather as never);
         }
       })
       .finally(() => setLoading(false));

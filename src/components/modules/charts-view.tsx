@@ -13,6 +13,7 @@ import { Scatter3D, type Scatter3DHandle } from "@/components/charts/scatter3d";
 import * as echarts from "echarts";
 import { useTheme } from "next-themes";
 import { toast } from "@/hooks/use-toast";
+import { fetchJson } from "@/lib/safe-json";
 import { LineChart, Download, FileImage, FileCode2, FileDown, History, Loader2, Boxes } from "lucide-react";
 
 interface Building {
@@ -57,11 +58,11 @@ export function ChartsView() {
 
   React.useEffect(() => {
     Promise.all([
-      fetch("/api/atlas").then((r) => r.json()),
-      fetch("/api/datasets").then((r) => r.json()),
+      fetchJson<{ buildings: Building[]; blocks: Block[] }>("/api/atlas"),
+      fetchJson<Array<{ name: string; data: string | null }>>("/api/datasets"),
     ]).then(([a, d]) => {
-      if (a.ok) setAtlas({ buildings: a.data.buildings, blocks: a.data.blocks });
-      if (d.ok) {
+      if (a.ok && a.data) setAtlas({ buildings: a.data.buildings, blocks: a.data.blocks });
+      if (d.ok && d.data) {
         const cal = (d.data as Array<{ name: string; data: string | null }>).find((x) => x.name.includes("کالیبراسیون"));
         if (cal?.data) setCalibration(JSON.parse(cal.data));
       }

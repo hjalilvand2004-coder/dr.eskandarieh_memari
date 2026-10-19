@@ -28,7 +28,7 @@ export async function GET() {
   return NextResponse.json({
     ok: true,
     service: "shiraz-smart-atlas",
-    version: "1.2.2",
+    version: "1.2.3",
     node: process.version,
     platform: `${process.platform}-${process.arch}`,
     uptimeSec: Math.round(process.uptime()),

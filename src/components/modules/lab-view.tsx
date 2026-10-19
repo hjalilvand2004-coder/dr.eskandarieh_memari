@@ -14,6 +14,7 @@ import { EChart, useBaseOption } from "@/components/charts/echart";
 import { Scatter3D, type Scatter3DHandle } from "@/components/charts/scatter3d";
 import { useTheme } from "next-themes";
 import { toast } from "@/hooks/use-toast";
+import { fetchJson } from "@/lib/safe-json";
 import { BrainCircuit, Loader2, Play, Info, Sigma, GitBranch, BarChart3, Boxes, Image as ImageIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -94,10 +95,9 @@ function EdaTab() {
   const run = async () => {
     setLoading(true);
     try {
-      const r = await fetch("/api/ml", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ op: "eda" }) });
-      const j = await r.json();
-      if (j.ok) setRes(j.data);
-      else toast({ title: j.error, variant: "destructive" });
+      const j = await fetchJson("/api/ml", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ op: "eda" }) });
+      if (j.ok && j.data) setRes(j.data as never);
+      else toast({ title: j.error ?? "خطا", variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -218,12 +218,11 @@ function KMeansTab() {
   const run = async () => {
     setLoading(true);
     try {
-      const r = await fetch("/api/ml", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ op: "kmeans", k: Number(k), seed: Number(seed) }) });
-      const j = await r.json();
-      if (j.ok) {
-        setRes(j.data);
+      const j = await fetchJson<{ silhouette: number; iterations: number }>("/api/ml", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ op: "kmeans", k: Number(k), seed: Number(seed) }) });
+      if (j.ok && j.data) {
+        setRes(j.data as never);
         toast({ title: "خوشه‌بندی اجرا شد", description: `Silhouette = ${j.data.silhouette.toFixed(3)} • ${j.data.iterations} تکرار` });
-      } else toast({ title: j.error, variant: "destructive" });
+      } else toast({ title: j.error ?? "خطا", variant: "destructive" });
     } finally {
       setLoading(false);
     }

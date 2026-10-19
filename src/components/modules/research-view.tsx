@@ -16,6 +16,7 @@ import { SectionHeader, EmptyState, fa, DemoBadge } from "@/components/shared/ui
 import { EChart, useBaseOption } from "@/components/charts/echart";
 import { useAppStore, canWrite } from "@/lib/store";
 import { toast } from "@/hooks/use-toast";
+import { fetchJson } from "@/lib/safe-json";
 import { useTheme } from "next-themes";
 import dynamic from "next/dynamic";
 import {
@@ -58,8 +59,7 @@ export function ResearchView() {
 
   const act = React.useCallback(
     async (payload: Record<string, unknown>, successMsg: string) => {
-      const res = await fetch("/api/project", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-      const j = await res.json();
+      const j = await fetchJson("/api/project", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       if (j.ok) {
         toast({ title: successMsg });
         reload();

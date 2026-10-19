@@ -9,6 +9,7 @@ import { SectionHeader, EmptyState, fa, DemoBadge } from "@/components/shared/ui
 import { EChart, useBaseOption } from "@/components/charts/echart";
 import { useAppStore, canWrite } from "@/lib/store";
 import { toast } from "@/hooks/use-toast";
+import { fetchJson } from "@/lib/safe-json";
 import { Target, Play, Info, Loader2, Scale, ShieldAlert } from "lucide-react";
 
 interface Scenario {
@@ -41,7 +42,7 @@ export function ScenariosView() {
   const base = useBaseOption();
 
   const reload = React.useCallback(() => {
-    fetch("/api/bootstrap").then((r) => r.json()).then((j) => { if (j.ok) { setScenarios(j.data.scenarios); setLoading(false); } });
+    fetchJson<{ scenarios: never[] }>("/api/bootstrap").then((j) => { if (j.ok && j.data) { setScenarios(j.data.scenarios as never); setLoading(false); } });
   }, []);
   React.useEffect(reload, [reload]);
 

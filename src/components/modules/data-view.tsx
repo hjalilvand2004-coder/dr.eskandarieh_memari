@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { SectionHeader, EmptyState, fa, DemoBadge, KeyValue } from "@/components/shared/ui-bits";
 import { useAppStore, canWrite } from "@/lib/store";
 import { toast } from "@/hooks/use-toast";
+import { fetchJson } from "@/lib/safe-json";
 import {
   Database, Upload, FileSpreadsheet, Globe, Wind, Trash2, ShieldAlert,
   Table2, BookA, Loader2, FileCheck2,
@@ -63,8 +64,8 @@ export function DataView() {
   const writable = canWrite(role);
 
   const reload = React.useCallback(() => {
-    fetch("/api/datasets").then((r) => r.json()).then((j) => j.ok && setDatasets(j.data));
-    fetch("/api/bootstrap").then((r) => r.json()).then((j) => j.ok && setWeather(j.data.weather));
+    fetchJson<DatasetRow[]>("/api/datasets").then((j) => j.ok && j.data && setDatasets(j.data));
+    fetchJson<{ weather: { name: string; note?: string | null } | null }>("/api/bootstrap").then((j) => j.ok && j.data && setWeather(j.data.weather));
   }, []);
   React.useEffect(reload, [reload]);
 
@@ -118,8 +119,7 @@ function DatasetCard({ ds, canDelete, onDeleted }: { ds: DatasetRow; canDelete: 
   }, [ds.variables]);
 
   const del = async () => {
-    const res = await fetch(`/api/datasets?id=${ds.id}`, { method: "DELETE" });
-    const j = await res.json();
+    const j = await fetchJson<{ ok: boolean }>(`/api/datasets?id=${ds.id}`, { method: "DELETE" });
     if (j.ok) {
       toast({ title: "مجموعه داده حذف شد", description: "رویداد در ممیزی ثبت شد." });
       onDeleted();
@@ -222,10 +222,9 @@ function UploadDialog({ onDone }: { onDone: () => void }) {
     fd.append("kind", kind);
     fd.append("file", file);
     try {
-      const res = await fetch("/api/datasets", { method: "POST", body: fd });
-      const j = await res.json();
-      if (j.ok) setReport(j.data.report);
-      else toast({ title: j.error, variant: "destructive" });
+      const j = await fetchJson<{ report: QualityReport }>("/api/datasets", { method: "POST", body: fd });
+      if (j.ok && j.data) setReport(j.data.report);
+      else toast({ title: j.error ?? "خطا", variant: "destructive" });
     } finally {
       setAnalyzing(false);
     }
@@ -240,15 +239,14 @@ function UploadDialog({ onDone }: { onDone: () => void }) {
     fd.append("file", file);
     Object.entries(meta).forEach(([k, v]) => fd.append(k, v));
     try {
-      const res = await fetch("/api/datasets", { method: "POST", body: fd });
-      const j = await res.json();
+      const j = await fetchJson<{ ok: boolean }>("/api/datasets", { method: "POST", body: fd });
       if (j.ok) {
         toast({ title: "مجموعه داده وارد شد", description: "داده خام دست‌نخورده ذخیره شد و رویداد ممیزی ثبت گردید." });
         setOpen(false);
         setReport(null);
         setFile(null);
         onDone();
-      } else toast({ title: j.error, variant: "destructive" });
+      } else toast({ title: j.error ?? "خطا", variant: "destructive" });
     } finally {
       setImporting(false);
     }

@@ -306,3 +306,27 @@ Work Log:
 
 Stage Summary:
 - ریشه واقعی خطای کاربر (فایل .env آلوده حامل مسیر مطلق ماشین ساخت در بسته‌های منتشرشده) کشف، بازتولید، رفع و راستی‌آزمایی شد؛ v1.2.2 با دیتابیس خود-ترمیم + خودآزمایی لانچر + گارد پکیجینگ آماده انتشار است
+
+---
+Task ID: 17
+Agent: main (Z.ai)
+Task: عیب‌یابی نهایی خطای پایدار کاربر روی ویندوز (Internal Server Error بعد از ارتقا) + انتشار v1.2.3
+
+Work Log:
+- بازسازی دقیق سناریو: دانلود ZIP منتشرشدهٔ v1.2.2 از Release و اجرا روی لینوکس → کاملاً سبز؛ پس بسته سالم بود
+- کشف ریشه با بازتولید عملی: یک نمونهٔ سرور کهنه از تست‌های قبلی روی پورت 3462 به curl «Internal Server Error» متنی می‌داد در حالی که نسخهٔ جدید روی پورت دیگر سبز بود → دقیقاً همان الگوی کاربر (نمونهٔ کهنه + پورت)
+- مکانیزم: بستن پنجرهٔ BAT روی ویندوز همیشه node فرزند را نمی‌بندد؛ نمونهٔ قدیمی (با بیلد خراب نسخه‌های قبل) روی 3000 می‌ماند و مرورگر/تب قدیمی یا نشانی دستی به همان وصال می‌شود؛ نسخهٔ جدید روی پورت دیگر بالا می‌آید
+- server.cjs v1.2.3: بستن خودکار نمونه‌های کهنهٔ همین سامانه روی 3000-3020 (مارکر /api/health یا عنوان HTML؛ شناسایی PID با Get-NetTCPConnection/netstat در ویندوز و lsof/ss/fuser در یونیکس؛ پروسه‌های ناشناس دست‌نخورده؛ استثنای PID خود)
+- باگ حین تست: lsof اتصالات خروجی خود لانچر را هم برمی‌گرداند → خودکشی لانچر؛ فیکس: فیلتر sTCP:LISTEN + استثنای process.pid + فیل‌بک ss برای لینوکس
+- خودآزمایی: بررسی هویت نسخهٔ پاسخ‌دهنده (مانع سبز کاذب)، ثبت وضعیت HTTP و بدنهٔ خام پاسخ خراب، آزمون require مستقیم ماژول‌های bootstrap/health/settings با استک کامل در diagnostic-report.txt
+- BATها: حذف URL ثابت 3000 از بنر (منطقی که کاربر را گمراه می‌کرد)، راهنمای فارسی، نسخه 1.2.3؛ همگام START-MAC-LINUX.sh
+- src/lib/safe-json.ts: هلپر واکشی امن JSON؛ پیچ شدن همهٔ زنجیره‌های بدون catch (charts/data/scenarios/simulation/research/lab) → پایان Uncaught SyntaxError در کنسول
+- کشف و حذف .env ریشهٔ پروژه (منبع آلودگی نسخه‌های قبل که Next.js به standalone کپی می‌کند) + گارد در sync و packaging
+- scripts/sync-portable-v123.sh: سینک whitelist (standalone کل سورس را trace می‌کرد؛ کپی انتخابی مثل v1.2.2) + نسخهٔ مرجع لانچر در scripts/launcher-server.cjs
+- بسته‌بندی: package-v123.sh → ZIP 117MB با گاردها (بدون .env/port.txt/report)
+- تست‌ها: تصاحب پورت از نمونهٔ کهنهٔ v1.2.2 سبز (Closed stale instance... PID ✓)، ZIP استخراج و ۸ بررسی API سبز (root/health 1.2.3/bootstrap+stats/settings/atlas/OLS/validation/datasets)، سه route-module LOAD OK
+- نسخه‌ها: package.json، VERSION.txt، CHANGELOG، README-فارسی (بخش عیب‌یابی ۱.۲.۳)، README.md
+- انتشار: main=b7f8ab3، تگ v1.2.3، Release id 416965459 با ZIP + SHA256SUMS
+
+Stage Summary:
+- ریشهٔ واقعی «همون خطای قبلی» = نمونهٔ سرور کهنه روی پورت؛ v1.2.3 آن را خودکار می‌بندد و با بررسی هویت نسخه، سبز کاذب غیرممکن شد؛ بستهٔ ZIP تست‌شده روی Release منتشر شد

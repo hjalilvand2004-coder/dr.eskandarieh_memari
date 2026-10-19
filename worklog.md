@@ -330,3 +330,28 @@ Work Log:
 
 Stage Summary:
 - ریشهٔ واقعی «همون خطای قبلی» = نمونهٔ سرور کهنه روی پورت؛ v1.2.3 آن را خودکار می‌بندد و با بررسی هویت نسخه، سبز کاذب غیرممکن شد؛ بستهٔ ZIP تست‌شده روی Release منتشر شد
+
+---
+Task ID: 18
+Agent: main (Z.ai)
+Task: رفع نهایی خطای تکرارشونده «Internal Server Error» در اجرای ویندوزی + انتشار v1.3.0
+
+Work Log:
+- کاربر گزارش کرد v1.2.3 هم همان خطا را می‌دهد + پرسش درباره ZIP ~98MB
+- سه بازتولید ایزوله (working tree، git HEAD archive، بدون node_modules والد) → هر سه کاملاً سالم (همه APIها 200)
+- audit nft: همه فایل‌های traced داخل portable/app حاضرند؛ فرضیه‌های «بسته ناقص» و «schema drift» رد شد
+- کشف کلید: chunk 507db27a متعلق به v1.2.3 است → کاربر نسخه جدید دارد ولی سرور پاسخ 500 خام می‌دهد → عامل باقی‌مانده: پروسه زامبی هنگ‌کرده که با مارکر HTTP شناسایی نمی‌شود / تب قدیمی
+- ZIP ~98MB = Repository.zip قدیمی (سورس)؛ ZIP صحیح ویندوزی ~117MiB (122.4MB asset)
+- v1.3.0: killZombiesByPath در launcher-server.cjs (بر اساس CommandLine/ExecutablePath: مسیر app، server.cjs، runtime node.exe) + appendCrashLog
+- src/instrumentation.ts: ثبت uncaughtException/unhandledRejection سرور در crash-log.txt
+- src/lib/version.ts (منبع یگانه) + ServerIdentity چیپ «سرور نسخهٔ ۱.۳.۰» در هدر + بنر ناسازگاری نسخه/بی‌پاسخی + health با pid/uptime
+- README-فارسی: راهنمای دانلود صحیح؛ BAT/شروع-سامانه/START-MAC-LINUX/VERSION/CHANGELOG به v1.3.0
+- بیلد + sync-portable-v130.sh (گارد .env دوباره عمل کرد) + audit + smoke-portable-v130.sh → 8/8 PASS ایزوله
+- تأیید مرورگری: چیپ سبز «سرور نسخهٔ ۱.۳.۰» رندر شد (اسکرین‌شات download/v130-chip-ok.png)؛ حالت fail چیپ هم عملاً تست شد
+- package-v130.sh → dist/Shiraz-Atlas-v1.3.0-Windows.zip (122.4MB، sha256 187e68cb…)
+- push main (0037596) + tag v1.3.0 + Release id 417025514 با دو asset
+- deprecate-old-releases.py: هشدار «منسوخ» روی v1.2.0..v1.2.3
+
+Stage Summary:
+- main = 0037596، tag/Release v1.3.0 (latest)؛ ریلیزهای قدیمی منسوخ علامت خوردند
+- پیام به کاربر: فقط Shiraz-Atlas-v1.3.0-Windows.zip (~117MiB) از ریلیز v1.3.0؛ استخراج در پوشه جدید؛ چیپ سبز = سالم

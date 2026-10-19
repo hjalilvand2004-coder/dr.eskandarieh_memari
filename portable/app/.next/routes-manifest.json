@@ -71,6 +71,12 @@
       "namedRegex": "^/api/datasets(?:/)?$"
     },
     {
+      "page": "/api/health",
+      "regex": "^/api/health(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/health(?:/)?$"
+    },
+    {
       "page": "/api/ml",
       "regex": "^/api/ml(?:/)?$",
       "routeKeys": {},

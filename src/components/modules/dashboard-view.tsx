@@ -44,10 +44,19 @@ export function DashboardView() {
     setLoading(true);
     setErrMsg(null);
     fetch("/api/bootstrap")
-      .then((r) => r.json())
+      .then(async (r) => {
+        const text = await r.text();
+        try {
+          return JSON.parse(text) as { ok: boolean; data?: BootstrapData; error?: string };
+        } catch {
+          throw new Error(
+            "سرور پاسخ معتبر برنگرداند (خطای داخلی). پنجره سرور را ببینید؛ گزارش: app/diagnostic-report.txt",
+          );
+        }
+      })
       .then((j) => {
         if (!alive) return;
-        if (j.ok) setData(j.data);
+        if (j.ok && j.data) setData(j.data);
         else setErrMsg(j?.error ?? "خطای ناشناخته سرور");
       })
       .catch((e) => {

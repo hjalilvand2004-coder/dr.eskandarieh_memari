@@ -5,6 +5,7 @@
   "/api/atlas/route": "/api/atlas",
   "/api/bootstrap/route": "/api/bootstrap",
   "/api/datasets/route": "/api/datasets",
+  "/api/health/route": "/api/health",
   "/api/ml/route": "/api/ml",
   "/api/project/route": "/api/project",
   "/api/route": "/api",

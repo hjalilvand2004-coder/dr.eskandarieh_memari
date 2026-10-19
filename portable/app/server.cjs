@@ -25,7 +25,7 @@ const APP_DIR = __dirname;
 const DB_PATH = path.join(APP_DIR, "db", "custom.db");
 const PORT_FILE = path.join(APP_DIR, "port.txt");
 const BASE_PORT = parseInt(process.env.PORT || "3000", 10) || 3000;
-const VERSION = "1.2.1";
+const VERSION = "1.2.2";
 
 function log(m) { console.log("[ShirazAtlas] " + m); }
 function fail(m) {
@@ -139,9 +139,77 @@ function firstFreePort(from, to) {
   log("URL      : http://localhost:" + port);
   log("Starting server ... (keep this window open / این پنجره را باز نگه دارید)");
   require("./server.js");
+
+  /* ─── ۳) خودآزمایی پس از استارت (v1.2.2) ───
+     تا سلامت واقعی APIها را با یک درخواست واقعی می‌سنجیم و
+     در صورت خطا، گزارش دقیق در app/diagnostic-report.txt ثبت می‌شود. */
+  selfTest(port);
 })().catch((e) => {
   fail("Startup failed:\n" + ((e && e.stack) || e));
 });
+
+/* ─── خودآزمایی v1.2.2: سلامت /api/health و /api/bootstrap ─── */
+function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
+
+async function selfTest(port) {
+  const base = "http://127.0.0.1:" + port;
+  const reportLines = [];
+  const add = (m) => { reportLines.push(m); log(m); };
+
+  // صبر تا آماده‌شدن سرور (حداکثر ۳۰ ثانیه)
+  let health = null;
+  for (let i = 0; i < 60; i++) {
+    await sleep(500);
+    try {
+      const r = await fetch(base + "/api/health", { signal: AbortSignal.timeout(5000) });
+      const j = await r.json();
+      if (j && j.ok) { health = j; break; }
+    } catch { /* هنوز آماده نیست */ }
+  }
+
+  if (!health) {
+    add("SELFTEST FAIL / خودآزمایی ناموفق: /api/health did not answer within 30s");
+    writeReport(port, reportLines);
+    return;
+  }
+  add("SELFTEST health ..... PASS (db.ok=" + (health.db && health.db.ok) +
+      ", projects=" + (health.db && health.db.projectCount) + ")");
+
+  let bootOk = false;
+  try {
+    const r = await fetch(base + "/api/bootstrap", { signal: AbortSignal.timeout(60000) });
+    const j = await r.json();
+    bootOk = !!(j && j.ok);
+    if (!bootOk && j && j.error) reportLines.push("bootstrap error: " + j.error);
+  } catch (e) {
+    reportLines.push("bootstrap exception: " + ((e && e.message) || e));
+  }
+  add(bootOk ? "SELFTEST bootstrap ... PASS — سامانه آماده است ✓"
+             : "SELFTEST bootstrap ... FAIL — داده‌ها بارگذاری نشد ✗");
+
+  if (bootOk) {
+    log("All checks passed. Open: " + base + "  (report: app/diagnostic-report.txt)");
+  } else {
+    console.error("");
+    console.error("[ShirazAtlas] TROUBLESHOOTING / رفع اشکال:");
+    console.error("  1) Keep the app folder on a LOCAL simple path (not OneDrive). / پوشه را در مسیر محلی ساده قرار دهید.");
+    console.error("  2) Re-extract the FULL ZIP into a NEW empty folder. / بسته را در پوشه‌ای جدید کامل استخراج کنید.");
+    console.error("  3) See app/diagnostic-report.txt / گزارش کامل در فایل diagnostic-report.txt");
+  }
+  writeReport(port, reportLines);
+}
+
+function writeReport(port, lines) {
+  try {
+    const stamp = new Date().toISOString();
+    fs.writeFileSync(
+      path.join(APP_DIR, "diagnostic-report.txt"),
+      "Shiraz Smart Atlas — diagnostic report / گزارش عیب\u200cیابی\n" +
+      "Date: " + stamp + "\nPort: " + port + "\nVersion: " + VERSION + "\n\n" +
+      lines.join("\n") + "\n"
+    );
+  } catch { /* best effort */ }
+}
 
 /* ─── خطاها شفاف گزارش می‌شوند ─── */
 process.on("uncaughtException", (e) => {

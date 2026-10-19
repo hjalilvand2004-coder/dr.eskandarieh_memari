@@ -53,7 +53,16 @@ export function AppShell() {
     let alive = true;
     const attempt = (n: number) => {
       fetch("/api/bootstrap")
-        .then((r) => r.json())
+        .then(async (r) => {
+          const text = await r.text();
+          try {
+            return JSON.parse(text);
+          } catch {
+            throw new Error(
+              "سرور پاسخ معتبر برنگرداند (خطای داخلی). پنجره سرور را ببینید؛ گزارش: app/diagnostic-report.txt",
+            );
+          }
+        })
         .then((j) => {
           if (!alive) return;
           if (j.ok) {
@@ -66,16 +75,18 @@ export function AppShell() {
             toast({ title: "خطا در بوت‌استرپ سامانه", description: j.error, variant: "destructive" });
           }
         })
-        .catch(() => {
+        .catch((e: unknown) => {
           if (!alive) return;
           if (n < 2) {
             window.setTimeout(() => attempt(n + 1), 1500);
             return;
           }
           setBooting(false);
+          const msg = e instanceof Error ? e.message : undefined;
           toast({
             title: "اتصال برقرار نشد",
             description:
+              msg ??
               "سرور در حال آماده‌سازی است؛ چند ثانیه صبر و صفحه را تازه‌سازی کنید. اگر تکرار شد، پنجره سیاه سرور را باز کرده و پیام خطا را بررسی کنید.",
             variant: "destructive",
           });
